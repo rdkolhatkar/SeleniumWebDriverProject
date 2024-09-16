@@ -2,10 +2,13 @@ package com.ratnakar;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
 
 public class BasicUiTest {
     public static void main(String[] args) {
-        // Creating a WebDriver Instance
+        /*
+        // Creating a WebDriver Instance for Chrome Driver
         WebDriver driver =new ChromeDriver();
         // Invoking the URL
         driver.get("https://rahulshettyacademy.com");
@@ -16,8 +19,24 @@ public class BasicUiTest {
         // Method to close the Current browser window
         driver.close();
         // Method to close all the associated browser windows opened by selenium code
-        driver.quit();
+        // driver.quit();
         System.out.println(driver.getTitle());
         System.out.println(driver.getCurrentUrl());
+         */
+
+        /*
+        // Creating a WebDriver Instance for Firefox Driver
+        WebDriver driver = new FirefoxDriver();
+        driver.get("https://rahulshettyacademy.com");
+        driver.getTitle();
+        driver.close();
+        */
+
+        // Creating a WebDriver Instance for Edge Driver
+        WebDriver driver = new EdgeDriver();
+        driver.get("https://rahulshettyacademy.com");
+        driver.getTitle();
+        driver.close();
+
     }
 }
