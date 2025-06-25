@@ -1,6 +1,7 @@
 package com.selenium.test;
 
 import net.thucydides.core.annotations.findby.By;
+import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
@@ -33,6 +34,8 @@ public class ScrollingOnWebPage {
             sum = sum + Integer.parseInt(values.get(i).getText());
         }
         System.out.println(sum);
+        int total = Integer.parseInt(driver.findElement(By.cssSelector(".totalAmount")).getText().split(":")[1].trim());
+        Assert.assertEquals(sum, total);
     }
 
 }
