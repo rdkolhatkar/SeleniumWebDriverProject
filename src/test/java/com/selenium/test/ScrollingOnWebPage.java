@@ -27,7 +27,7 @@ public class ScrollingOnWebPage {
         javascriptExecutor.executeScript("document.querySelector('.tableFixHead').scrollTop=5000");
         // Table validation
         List<WebElement> values = driver.findElements(By.cssSelector(".tableFixHead td:nth-child(4)"));
-        int sum = 0;
+       int sum = 0;
         for(int i = 0; i < values.size(); i++){
             System.out.println(Integer.parseInt(values.get(i).getText()));
             System.out.println("Addition of all the retrieved values from the table is ");
