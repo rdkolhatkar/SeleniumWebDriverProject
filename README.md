@@ -96,7 +96,7 @@ The project uses the following dependencies (managed via `pom.xml`):
 ### Example Test
 
 ```java
-package com.ratnakar.testng;
+package com.ratnakar.framework;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;

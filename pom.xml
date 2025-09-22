@@ -28,6 +28,7 @@
         <serenityRestAssured.version>4.2.3</serenityRestAssured.version>
         <serenityCucumber.version>4.2.3</serenityCucumber.version>
         <cucumber.version>7.20.1</cucumber.version>
+        <webdriver.manager.version>6.3.2</webdriver.manager.version>
 
         <mavenSurefirePlugin.version>2.22.2</mavenSurefirePlugin.version>
         <buildHelperMavenPlugin.version>3.6.0</buildHelperMavenPlugin.version>
@@ -151,7 +152,12 @@
             <artifactId>cucumber-java</artifactId>
             <version>${cucumber.version}</version>
         </dependency>
-
+        <!-- https://mvnrepository.com/artifact/io.github.bonigarcia/webdrivermanager -->
+        <dependency>
+            <groupId>io.github.bonigarcia</groupId>
+            <artifactId>webdrivermanager</artifactId>
+            <version>${webdriver.manager.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
