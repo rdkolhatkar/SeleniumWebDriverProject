@@ -25,8 +25,12 @@ public class StandAloneEcommerceWebTest {
         // Get title of the page after login is successful
         System.out.println(driver.getTitle());
         // Retrieve the list of all products present on the website
+        // Then find the product with name as "ZARA COAT 3"
         List<WebElement> products = driver.findElements(By.cssSelector(".mb-3"));
-
-
+        WebElement product = products.stream().filter(
+                s -> s.findElement(By.cssSelector("b")).getText().equals("ZARA COAT 3")
+        ).findFirst().orElse(null);
+        // Now we have to click on add to cart button
+        product.findElement(By.cssSelector(".card-body button:last-of-type")).click();
     }
 }
