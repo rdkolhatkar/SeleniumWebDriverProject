@@ -1,6 +1,8 @@
-package com.ratnakar.framework.pageobjects.basetest;
+package com.ratnakar.framework.PageObjects.BaseTest;
 
-import com.ratnakar.framework.pageobjects.loginpage.LoginPage;
+import com.ratnakar.framework.PageObjects.AbstractComponents.EcommerceWebAbstractComponents;
+import com.ratnakar.framework.PageObjects.LoginPage.EcommerceWebLoginPage;
+import com.ratnakar.framework.PageObjects.ProductPage.EcommerceWebProductCatalogue;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import net.thucydides.core.annotations.findby.By;
 import org.junit.Assert;
@@ -26,8 +28,11 @@ public class EcommerceWebTest {
         // Maximizing the window
         driver.manage().window().maximize();
 
+        // Defining explicit wait
+        WebDriverWait webDriverWait = new WebDriverWait(driver, Duration.ofSeconds(5));
+
         // Creating Object of LoginPage
-        LoginPage loginPage = new LoginPage(driver);
+        EcommerceWebLoginPage loginPage = new EcommerceWebLoginPage(driver);
 
         // Navigating to Ecommerce Web
         loginPage.navigateTo();
@@ -35,25 +40,20 @@ public class EcommerceWebTest {
         // Calling the Methods from LoginPage for accessing Ecommerce Web Application
         loginPage.loginToEcommerceWebApplication("ratnakarkolhatkar@gmail.com", "Ratanlord@1409");
 
-        Thread.sleep(3000);
         // Get title of the page after login is successful
         System.out.println(driver.getTitle());
         // Retrieve the list of all products present on the website
         // Then find the product with name as "ZARA COAT 3"
         String productName = "ZARA COAT 3";
-        List<WebElement> products = driver.findElements(By.cssSelector(".mb-3"));
-        WebElement product = products.stream().filter(
-                s -> s.findElement(By.cssSelector("b")).getText().equals(productName)
-        ).findFirst().orElse(null);
+
+        // Calling the ProductCatalogue class
+        EcommerceWebProductCatalogue ecommerceWebProductCatalogue = new EcommerceWebProductCatalogue(driver);
+        List<WebElement> products = ecommerceWebProductCatalogue.getProductsList();
+
+
         // Now we have to click on add to cart button
-        product.findElement(By.cssSelector(".card-body button:last-of-type")).click();
-        // Now after add to cart is completed on toast message will be displayed on the bottom of the page
-        // After adding item to cart we have to wait until that toast message is showing up on the screen
-        // Explicit Wait
-        WebDriverWait webDriverWait = new WebDriverWait(driver, Duration.ofSeconds(5));
-        webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("#toast-container")));
-        // Wait till toast message disappears
-        webDriverWait.until(ExpectedConditions.invisibilityOf(driver.findElement(By.cssSelector(".ng-animating"))));
+        ecommerceWebProductCatalogue.addProductToCart(productName);
+
         // now click on the cart button
         driver.findElement(By.cssSelector("[routerlink*='cart']")).click();
         // Now validate if product is present in the cart items
@@ -74,7 +74,7 @@ public class EcommerceWebTest {
         actions.sendKeys(
                 driver.findElement(By.cssSelector("[placeholder='Select Country']")),
                 "India"
-                ).build().perform();
+        ).build().perform();
         // After sending keys we have to wait till our dropdown list is visible
         webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".ta-results")));
         driver.findElement(By.xpath("(//button[contains(@class, 'ta-item')])[2]")).click();

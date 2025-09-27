@@ -1,18 +1,24 @@
-package com.ratnakar.framework.pageobjects.loginpage;
+package com.ratnakar.framework.PageObjects.LoginPage;
 
+import com.ratnakar.framework.PageObjects.AbstractComponents.EcommerceWebAbstractComponents;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
-public class LoginPage {
+public class EcommerceWebLoginPage extends EcommerceWebAbstractComponents {
 
     WebDriver driver;
 
-    public LoginPage(WebDriver driver) {
+    public EcommerceWebLoginPage(WebDriver driver) {
+        // As EcommerceWebLoginPage is child class of EcommerceWebAbstractComponents
+        // We have to send the driver instance coming from EcommerceWebTest towards the EcommerceWebAbstractComponents
+        // For this we have to use the super() keyword in java
+        super(driver);
         // Here we have to initialize driver which is defined in EcommerceWebTest
         this.driver = driver;
         // We will define the PageFactory elements in the constructor
+
         PageFactory.initElements(driver, this);
     }
 
