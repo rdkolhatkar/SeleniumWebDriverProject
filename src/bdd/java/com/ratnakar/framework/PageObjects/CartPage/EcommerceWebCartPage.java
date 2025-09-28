@@ -1,6 +1,6 @@
 package com.ratnakar.framework.PageObjects.CartPage;
 
-import com.ratnakar.framework.PageObjects.AbstractComponents.EcommerceWebAbstractComponents;
+import com.ratnakar.framework.PageObjects.CheckOutPage.EcommerceWebCheckoutPage;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -27,8 +27,10 @@ public class EcommerceWebCartPage {
         return cartProductTitles.stream().anyMatch(s -> s.getText().equalsIgnoreCase(productName));
     }
 
-    public void goToCheckOut(){
+    public EcommerceWebCheckoutPage goToCheckOut(){
         checkOutElement.click();
+        // Here we will return the object of EcommerceWebCheckoutPage
+        return new EcommerceWebCheckoutPage(driver);
     }
 
 
