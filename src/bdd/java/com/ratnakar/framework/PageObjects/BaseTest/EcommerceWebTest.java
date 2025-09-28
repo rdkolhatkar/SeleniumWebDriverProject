@@ -1,6 +1,7 @@
 package com.ratnakar.framework.PageObjects.BaseTest;
 
-import com.ratnakar.framework.PageObjects.AbstractComponents.EcommerceWebAbstractComponents;
+
+import com.ratnakar.framework.PageObjects.CartPage.EcommerceWebCartPage;
 import com.ratnakar.framework.PageObjects.LoginPage.EcommerceWebLoginPage;
 import com.ratnakar.framework.PageObjects.ProductPage.EcommerceWebProductCatalogue;
 import io.github.bonigarcia.wdm.WebDriverManager;
@@ -38,7 +39,7 @@ public class EcommerceWebTest {
         loginPage.navigateTo();
 
         // Calling the Methods from LoginPage for accessing Ecommerce Web Application
-        loginPage.loginToEcommerceWebApplication("ratnakarkolhatkar@gmail.com", "Ratanlord@1409");
+        EcommerceWebProductCatalogue ecommerceWebProductCatalogue = loginPage.loginToEcommerceWebApplication("ratnakarkolhatkar@gmail.com", "Ratanlord@1409");
 
         // Get title of the page after login is successful
         System.out.println(driver.getTitle());
@@ -47,27 +48,25 @@ public class EcommerceWebTest {
         String productName = "ZARA COAT 3";
 
         // Calling the ProductCatalogue class
-        EcommerceWebProductCatalogue ecommerceWebProductCatalogue = new EcommerceWebProductCatalogue(driver);
-        List<WebElement> products = ecommerceWebProductCatalogue.getProductsList();
 
+        List<WebElement> products = ecommerceWebProductCatalogue.getProductsList();
 
         // Now we have to click on add to cart button
         ecommerceWebProductCatalogue.addProductToCart(productName);
 
         // now click on the cart button
-        driver.findElement(By.cssSelector("[routerlink*='cart']")).click();
-        // Now validate if product is present in the cart items
-        List<WebElement> cartProducts = driver.findElements(By.cssSelector(".cartSection h3"));
-        /*
-        In Java Stream API, anyMatch() is a terminal operation that tests whether at least one element in the stream matches a given predicate (condition).
-        Return type → boolean
-        Stops early → As soon as it finds the first matching element, it short-circuits and returns true.
-        If no element matches → Returns false.
-        */
-        boolean match = cartProducts.stream().anyMatch(s -> s.getText().equalsIgnoreCase(productName));
+        // As per inheritance concept in java child class can also access all parent class methods directly
+        // As EcommerceWebProductCatalogue is child of EcommerceWebAbstractComponents
+        Thread.sleep(1000);
+        EcommerceWebCartPage ecommerceWebCartPage = ecommerceWebProductCatalogue.goToCartPage();
+
+        // Cart Page Verification
+        Boolean match = ecommerceWebCartPage.verifyTheDisplayedCartProducts(productName);
         Assert.assertTrue(match);
-        // Now we have to click on checkout button
-        driver.findElement(By.cssSelector(".totalRow button")).click();
+
+        // Now validate if product is present in the cart items
+        ecommerceWebCartPage.goToCheckOut();
+
         // Now we have to fill the card details form for submitting the order
         // Select the country dropdown
         Actions actions = new Actions(driver);

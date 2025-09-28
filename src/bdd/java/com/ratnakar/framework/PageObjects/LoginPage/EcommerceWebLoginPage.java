@@ -1,6 +1,7 @@
 package com.ratnakar.framework.PageObjects.LoginPage;
 
 import com.ratnakar.framework.PageObjects.AbstractComponents.EcommerceWebAbstractComponents;
+import com.ratnakar.framework.PageObjects.ProductPage.EcommerceWebProductCatalogue;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -34,10 +35,14 @@ public class EcommerceWebLoginPage extends EcommerceWebAbstractComponents {
 
     // Now we have to write the Action methods for Entering userEmail, userPassword and clicking on submitButton
 
-    public void loginToEcommerceWebApplication(String email, String password){
+    public EcommerceWebProductCatalogue loginToEcommerceWebApplication(String email, String password){
         userEmail.sendKeys(email);
         userPassword.sendKeys(password);
         submitButton.click();
+
+        // Defining object of EcommerceWebProductCatalogue
+        EcommerceWebProductCatalogue ecommerceWebProductCatalogue = new EcommerceWebProductCatalogue(driver);
+        return ecommerceWebProductCatalogue;
     }
 
     public void navigateTo(){
