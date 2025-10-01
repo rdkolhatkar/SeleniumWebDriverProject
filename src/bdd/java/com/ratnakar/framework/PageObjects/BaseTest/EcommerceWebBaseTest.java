@@ -1,5 +1,6 @@
 package com.ratnakar.framework.PageObjects.BaseTest;
 
+import com.ratnakar.framework.PageObjects.LoginPage.EcommerceWebLoginPage;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -14,11 +15,11 @@ public class EcommerceWebBaseTest {
 
     public WebDriver driver;
     
-    public void initializeDriver() throws IOException {
+    public WebDriver initializeDriver() throws IOException {
         // Here to create the Global Properties We have to use Java Class called Properties
         // Below Java code will helps us to read the configurations from the GlobalTestConfigurations.properties
         Properties properties = new Properties();
-        FileInputStream fileInputStream = new FileInputStream(System.getProperty("user.dir")+"src/bdd/resources/GlobalTestConfigurations.properties");
+        FileInputStream fileInputStream = new FileInputStream("src/bdd/resources/GlobalTestConfigurations.properties");
         properties.load(fileInputStream);
         // Now we can fetch the property based on the key value from the GlobalTestConfigurations.properties
         String browserName = properties.getProperty("browser");
@@ -40,5 +41,16 @@ public class EcommerceWebBaseTest {
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
         driver.manage().window().maximize();
 
+        return driver;
+    }
+
+    public EcommerceWebLoginPage launchEcommerceWebApp() throws IOException {
+        // Calling the Method initializeDriver()
+        driver = initializeDriver();
+        // Creating Object of LoginPage
+        EcommerceWebLoginPage loginPage = new EcommerceWebLoginPage(driver);
+        // Navigating to Ecommerce Web
+        loginPage.navigateTo();
+        return loginPage;
     }
 }

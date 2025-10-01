@@ -1,6 +1,7 @@
-package com.ratnakar.framework.PageObjects.BaseTest;
+package com.ratnakar.framework.PageObjects.ActualTest;
 
 
+import com.ratnakar.framework.PageObjects.BaseTest.EcommerceWebBaseTest;
 import com.ratnakar.framework.PageObjects.CartPage.EcommerceWebCartPage;
 import com.ratnakar.framework.PageObjects.CheckOutPage.EcommerceWebCheckoutPage;
 import com.ratnakar.framework.PageObjects.ConfirmOrder.EcommerceWebOrderConfirmationPage;
@@ -10,27 +11,19 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.Assert;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.testng.annotations.Test;
+
+import java.io.IOException;
 import java.time.Duration;
 
 
-public class EcommerceWebTest {
-    public static void main(String[] args) throws InterruptedException {
-        // Setup ChromeDriver automatically using WebDriverManager.
-        // It downloads the right version if not available and configures system property internally.
-        WebDriverManager.chromedriver().setup();
-        WebDriver driver = new ChromeDriver();
-        // Giving global timeouts
-        // Implicit Wait
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
-        // Maximizing the window
-        driver.manage().window().maximize();
+public class EcommerceWebTest extends EcommerceWebBaseTest {
 
-        // Creating Object of LoginPage
-        EcommerceWebLoginPage loginPage = new EcommerceWebLoginPage(driver);
+    @Test
+    public void EcommerceWebApplicationTest() throws InterruptedException, IOException {
 
-        // Navigating to Ecommerce Web
-        loginPage.navigateTo();
-
+        // Launch The EcommerceWeb APP
+        EcommerceWebLoginPage loginPage = launchEcommerceWebApp();
         // Calling the Methods from LoginPage for accessing Ecommerce Web Application
         EcommerceWebProductCatalogue ecommerceWebProductCatalogue = loginPage.loginToEcommerceWebApplication("ratnakarkolhatkar@gmail.com", "Ratanlord@1409");
 
