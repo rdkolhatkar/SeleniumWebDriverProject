@@ -29,18 +29,20 @@ public class EcommerceWebAbstractComponents {
     }
 
     public void waitForElementToDisappear(WebElement webElement) {
-
         WebDriverWait webDriverWait = new WebDriverWait(driver, Duration.ofSeconds(5));
         webDriverWait.until(ExpectedConditions.invisibilityOf(webElement));
-
     }
 
     public EcommerceWebCartPage goToCartPage(){
         cartHeader.click();
-
         // Creating object of cart page to return the same object
         EcommerceWebCartPage ecommerceWebCartPage = new EcommerceWebCartPage(driver);
         return ecommerceWebCartPage;
+    }
+
+    public void waitForWebElementToAppear(WebElement findBy) {
+        WebDriverWait webDriverWait = new WebDriverWait(driver, Duration.ofSeconds(5));
+        webDriverWait.until(ExpectedConditions.visibilityOf(findBy));
     }
 
 }

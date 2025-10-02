@@ -6,6 +6,10 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeTest;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.time.Duration;
@@ -14,6 +18,7 @@ import java.util.Properties;
 public class EcommerceWebBaseTest {
 
     public WebDriver driver;
+    public EcommerceWebLoginPage loginPage;
     
     public WebDriver initializeDriver() throws IOException {
         // Here to create the Global Properties We have to use Java Class called Properties
@@ -44,13 +49,20 @@ public class EcommerceWebBaseTest {
         return driver;
     }
 
+    @BeforeMethod
     public EcommerceWebLoginPage launchEcommerceWebApp() throws IOException {
         // Calling the Method initializeDriver()
         driver = initializeDriver();
         // Creating Object of LoginPage
-        EcommerceWebLoginPage loginPage = new EcommerceWebLoginPage(driver);
+        loginPage = new EcommerceWebLoginPage(driver);
         // Navigating to Ecommerce Web
         loginPage.navigateTo();
         return loginPage;
+    }
+
+    @AfterMethod
+    public void tearDownBrowser(){
+        // closing the browser after test is completed
+        driver.quit();
     }
 }

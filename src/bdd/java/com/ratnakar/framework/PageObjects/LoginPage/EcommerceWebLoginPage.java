@@ -33,6 +33,9 @@ public class EcommerceWebLoginPage extends EcommerceWebAbstractComponents {
     @FindBy(id="login")
     WebElement submitButton;
 
+    @FindBy(css="[class*='flyInOut']")
+    WebElement loginErrorMessage;
+
     // Now we have to write the Action methods for Entering userEmail, userPassword and clicking on submitButton
 
     public EcommerceWebProductCatalogue loginToEcommerceWebApplication(String email, String password){
@@ -47,6 +50,11 @@ public class EcommerceWebLoginPage extends EcommerceWebAbstractComponents {
 
     public void navigateTo(){
         driver.get("https://rahulshettyacademy.com/client");
+    }
+
+    public String getLoginErrorMessage(){
+        waitForWebElementToAppear(loginErrorMessage);
+        return loginErrorMessage.getText();
     }
 
 }
