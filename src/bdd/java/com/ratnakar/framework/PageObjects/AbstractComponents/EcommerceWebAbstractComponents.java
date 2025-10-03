@@ -1,6 +1,7 @@
 package com.ratnakar.framework.PageObjects.AbstractComponents;
 
 import com.ratnakar.framework.PageObjects.CartPage.EcommerceWebCartPage;
+import com.ratnakar.framework.PageObjects.OrderPage.EcommerceWebOrderPage;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -23,6 +24,9 @@ public class EcommerceWebAbstractComponents {
     @FindBy(css="[routerlink*='cart']")
     WebElement cartHeader;
 
+    @FindBy(css="[routerlink*='myorders']")
+    WebElement orderHeader;
+
     public void waitForElementToAppear(By findByElement) {
         WebDriverWait webDriverWait = new WebDriverWait(driver, Duration.ofSeconds(5));
         webDriverWait.until(ExpectedConditions.visibilityOfElementLocated(findByElement));
@@ -38,6 +42,13 @@ public class EcommerceWebAbstractComponents {
         // Creating object of cart page to return the same object
         EcommerceWebCartPage ecommerceWebCartPage = new EcommerceWebCartPage(driver);
         return ecommerceWebCartPage;
+    }
+
+    public EcommerceWebOrderPage goToOrdersPage(){
+        orderHeader.click();
+        // Creating object of cart page to return the same object
+        EcommerceWebOrderPage ecommerceWebOrderPage = new EcommerceWebOrderPage(driver);
+        return ecommerceWebOrderPage;
     }
 
     public void waitForWebElementToAppear(WebElement findBy) {

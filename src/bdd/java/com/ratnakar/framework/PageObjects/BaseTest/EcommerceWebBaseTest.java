@@ -49,7 +49,7 @@ public class EcommerceWebBaseTest {
         return driver;
     }
 
-    @BeforeMethod
+    @BeforeMethod(alwaysRun = true)
     public EcommerceWebLoginPage launchEcommerceWebApp() throws IOException {
         // Calling the Method initializeDriver()
         driver = initializeDriver();

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite parallel="tests" name="All Test Suite">
+    <test verbose="2" preserve-order="true" name="D:/selenium/SeleniumWebDriverProject/src/bdd">
+        <classes>
+            <class name="com.ratnakar.framework.StandAloneEcommerceWebTest"></class>
+        </classes>
+    </test>
+    <test verbose="2" preserve-order="true" name="D:/selenium/SeleniumWebDriverProject/src/test">
+        <classes>
+            <class name="com.selenium.test.EndToEndAutomationGreenKart"></class>
+        </classes>
+    </test>
+</suite>

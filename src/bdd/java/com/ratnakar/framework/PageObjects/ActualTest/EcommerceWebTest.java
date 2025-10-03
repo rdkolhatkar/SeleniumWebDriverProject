@@ -5,13 +5,14 @@ import com.ratnakar.framework.PageObjects.BaseTest.EcommerceWebBaseTest;
 import com.ratnakar.framework.PageObjects.CartPage.EcommerceWebCartPage;
 import com.ratnakar.framework.PageObjects.CheckOutPage.EcommerceWebCheckoutPage;
 import com.ratnakar.framework.PageObjects.ConfirmOrder.EcommerceWebOrderConfirmationPage;
+import com.ratnakar.framework.PageObjects.OrderPage.EcommerceWebOrderPage;
 import com.ratnakar.framework.PageObjects.ProductPage.EcommerceWebProductCatalogue;
 import org.junit.Assert;
 import org.testng.annotations.Test;
 
 
 public class EcommerceWebTest extends EcommerceWebBaseTest {
-
+    String productName = "ZARA COAT 3";
     @Test
     public void EcommerceWebApplicationTest() throws InterruptedException {
         // Calling the Methods from LoginPage for accessing Ecommerce Web Application
@@ -20,7 +21,7 @@ public class EcommerceWebTest extends EcommerceWebBaseTest {
         System.out.println(driver.getTitle());
         // Retrieve the list of all products present on the website
         // Then find the product with name as "ZARA COAT 3"
-        String productName = "ZARA COAT 3";
+        // String productName = "ZARA COAT 3";
         // Now we have to click on add to cart button
         ecommerceWebProductCatalogue.addProductToCart(productName);
         // now click on the cart button
@@ -41,6 +42,14 @@ public class EcommerceWebTest extends EcommerceWebBaseTest {
         // After submitting order you will see the thank you page
         String confirmMessage = ecommerceWebOrderConfirmationPage.getOrderConfirmationMessage();
         Assert.assertTrue(confirmMessage.equalsIgnoreCase("THANKYOU FOR THE ORDER."));
+    }
+    @Test (dependsOnMethods = {"EcommerceWebApplicationTest"}) // "dependsOnMethods" This testNG annotation is used when tests are interdependent
+    public void OrderHistoryPageTest(){
+        // OrderHistoryPageTest will only run if EcommerceWebApplicationTest is passed successfully
+        EcommerceWebProductCatalogue ecommerceWebProductCatalogue = loginPage.loginToEcommerceWebApplication("ratnakarkolhatkar@gmail.com", "Ratanlord@1409");
+        EcommerceWebOrderPage ecommerceWebOrderPage = ecommerceWebProductCatalogue.goToOrdersPage();
+        boolean result = ecommerceWebOrderPage.verifyTheDisplayedOrders(productName);
+        Assert.assertTrue(result);
     }
     @Test
     public void EcommerceWebLoginErrorValidationTest(){
