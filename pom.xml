@@ -2,6 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>SeleniumWebDriver</groupId>
@@ -12,29 +13,30 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <!-- Define dependency versions here -->
-        <sereniyCore.version>4.1.20</sereniyCore.version>
-        <serenityJunit.version>4.1.20</serenityJunit.version>
-        <serenityJunit5.version>4.1.20</serenityJunit5.version>
-        <junitVintageEngine.version>5.11.3</junitVintageEngine.version>
-        <Junit.version>4.13.2</Junit.version>
-        <assertJ.version>3.8.0</assertJ.version>
-        <LogBack.version>1.5.6</LogBack.version>
-        <lombok.version>1.18.32</lombok.version>
-        <hamcrest.version>3.0</hamcrest.version>
-        <testng.version>7.10.2</testng.version>
-        <junitJupiterApi.version>5.11.0</junitJupiterApi.version>
-        <junitJupiterEngine>5.11.0</junitJupiterEngine>
-        <serenityRestAssured.version>4.2.3</serenityRestAssured.version>
-        <serenityCucumber.version>4.2.3</serenityCucumber.version>
-        <cucumber.version>7.20.1</cucumber.version>
-        <webdriver.manager.version>6.3.2</webdriver.manager.version>
-        <jackson.databind.version>2.17.2</jackson.databind.version>
 
-        <mavenSurefirePlugin.version>2.22.2</mavenSurefirePlugin.version>
-        <buildHelperMavenPlugin.version>3.6.0</buildHelperMavenPlugin.version>
-        <mavenCompilerPlugin.version>3.13.0</mavenCompilerPlugin.version>
-        <mavenResourcesPlugin.version>3.3.1</mavenResourcesPlugin.version>
+        <!-- Serenity Versions -->
+        <serenity.version>4.2.12</serenity.version>
+        <serenity.cucumber.version>4.2.3</serenity.cucumber.version>
+        <serenity.restassured.version>4.2.3</serenity.restassured.version>
+
+        <!-- Other Dependencies -->
+        <selenium.version>4.25.0</selenium.version>
+        <testng.version>7.10.2</testng.version>
+        <junit.version>4.13.2</junit.version>
+        <junit.jupiter.version>5.11.0</junit.jupiter.version>
+        <assertj.version>3.25.3</assertj.version>
+        <hamcrest.version>3.0</hamcrest.version>
+        <logback.version>1.5.6</logback.version>
+        <lombok.version>1.18.32</lombok.version>
+        <cucumber.version>7.20.1</cucumber.version>
+        <webdrivermanager.version>6.3.2</webdrivermanager.version>
+        <jackson.databind.version>2.17.2</jackson.databind.version>
+        <extent.reports.version>5.1.2</extent.reports.version>
+
+        <!-- Maven Plugins -->
+        <maven.surefire.plugin.version>3.2.5</maven.surefire.plugin.version>
+        <maven.compiler.plugin.version>3.13.0</maven.compiler.plugin.version>
+        <build.helper.plugin.version>3.6.0</build.helper.plugin.version>
     </properties>
 
     <repositories>
@@ -42,142 +44,119 @@
             <id>central</id>
             <url>https://repo.maven.apache.org/maven2</url>
         </repository>
-        <repository>
-            <id>serenity-repo</id>
-            <url>https://dl.bintray.com/serenity/maven/</url>
-        </repository>
     </repositories>
 
     <dependencies>
-
-        <!-- https://mvnrepository.com/artifact/net.serenity-bdd/serenity-core -->
+        <!-- Serenity Core & Integration -->
         <dependency>
             <groupId>net.serenity-bdd</groupId>
             <artifactId>serenity-core</artifactId>
-            <version>${sereniyCore.version}</version>
-            <scope>compile</scope>
+            <version>${serenity.version}</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/net.serenity-bdd/serenity-junit -->
         <dependency>
             <groupId>net.serenity-bdd</groupId>
             <artifactId>serenity-junit</artifactId>
-            <version>${serenityJunit.version}</version>
-            <scope>compile</scope> <!-- Add this scope compile to configure serenity classpath in sec/main/java -->
+            <version>${serenity.version}</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/net.serenity-bdd/serenity-junit5 -->
         <dependency>
             <groupId>net.serenity-bdd</groupId>
             <artifactId>serenity-junit5</artifactId>
-            <version>${serenityJunit5.version}</version>
-            <scope>test</scope>
+            <version>${serenity.version}</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.junit.vintage/junit-vintage-engine -->
-        <dependency>
-            <groupId>org.junit.vintage</groupId>
-            <artifactId>junit-vintage-engine</artifactId>
-            <version>${junitVintageEngine.version}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/net.serenity-bdd/serenity-rest-assured -->
         <dependency>
             <groupId>net.serenity-bdd</groupId>
             <artifactId>serenity-rest-assured</artifactId>
-            <version>${serenityRestAssured.version}</version>
+            <version>${serenity.restassured.version}</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/junit/junit -->
+        <dependency>
+            <groupId>net.serenity-bdd</groupId>
+            <artifactId>serenity-cucumber</artifactId>
+            <version>${serenity.cucumber.version}</version>
+        </dependency>
+
+        <!-- Selenium & WebDriver -->
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-java</artifactId>
+            <version>${selenium.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.bonigarcia</groupId>
+            <artifactId>webdrivermanager</artifactId>
+            <version>${webdrivermanager.version}</version>
+        </dependency>
+
+        <!-- Testing Frameworks -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>${Junit.version}</version>
-            <scope>compile</scope>
+            <version>${junit.version}</version>
         </dependency>
-        <!-- To add Junit classpath for src/main/java directory implement the following dependencies -->
-        <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
-            <version>${junitJupiterApi.version}</version> <!-- Use the latest version -->
-            <scope>compile</scope> <!-- Make JUnit available in src/main -->
+            <version>${junit.jupiter.version}</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-engine -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
-            <version>${junitJupiterEngine}</version>
-            <scope>compile</scope> <!-- Needed to run JUnit tests from main -->
+            <version>${junit.jupiter.version}</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.assertj/assertj-core -->
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>${testng.version}</version>
+        </dependency>
+
+        <!-- Reporting -->
+        <dependency>
+            <groupId>com.aventstack</groupId>
+            <artifactId>extentreports</artifactId>
+            <version>${extent.reports.version}</version>
+        </dependency>
+
+        <!-- Utility -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.databind.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
-            <version>${assertJ.version}</version>
-            <scope>test</scope>
+            <version>${assertj.version}</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/ch.qos.logback/logback-classic -->
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest</artifactId>
+            <version>${hamcrest.version}</version>
+        </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>${LogBack.version}</version>
-            <scope>compile</scope>
+            <version>${logback.version}</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>${lombok.version}</version>
             <scope>provided</scope>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.hamcrest/hamcrest -->
-        <dependency>
-            <groupId>org.hamcrest</groupId>
-            <artifactId>hamcrest</artifactId>
-            <version>${hamcrest.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <version>${testng.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/net.serenity-bdd/serenity-cucumber -->
-        <dependency>
-            <groupId>net.serenity-bdd</groupId>
-            <artifactId>serenity-cucumber</artifactId>
-            <version>${serenityCucumber.version}</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/io.cucumber/cucumber-java -->
-        <dependency>
-            <groupId>io.cucumber</groupId>
-            <artifactId>cucumber-java</artifactId>
-            <version>${cucumber.version}</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/io.github.bonigarcia/webdrivermanager -->
-        <dependency>
-            <groupId>io.github.bonigarcia</groupId>
-            <artifactId>webdrivermanager</artifactId>
-            <version>${webdriver.manager.version}</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>${jackson.databind.version}</version>
-        </dependency>
     </dependencies>
 
     <build>
         <sourceDirectory>src/main/java</sourceDirectory>
         <testSourceDirectory>src/test/java</testSourceDirectory>
+
         <plugins>
+            <!-- Include extra source directories -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
-                <version>${buildHelperMavenPlugin.version}</version>
+                <version>${build.helper.plugin.version}</version>
                 <executions>
                     <execution>
-                        <id>add-source</id>
+                        <id>add-additional-source</id>
                         <phase>generate-sources</phase>
                         <goals>
                             <goal>add-source</goal>
@@ -191,92 +170,50 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <!-- Compile with Java 17 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven.compiler.plugin.version}</version>
+                <configuration>
+                    <source>17</source>
+                    <target>17</target>
+                </configuration>
+            </plugin>
+
+            <!-- Serenity Report Aggregation -->
             <plugin>
                 <groupId>net.serenity-bdd.maven.plugins</groupId>
                 <artifactId>serenity-maven-plugin</artifactId>
-                <version>${sereniyCore.version}</version>
+                <version>${serenity.version}</version>
                 <executions>
                     <execution>
+                        <id>serenity-reports</id>
+                        <phase>post-integration-test</phase>
                         <goals>
                             <goal>aggregate</goal>
                         </goals>
                     </execution>
                 </executions>
             </plugin>
-            <!-- Additional source sets for BDD -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>${mavenCompilerPlugin.version}</version>
-                <configuration>
-                    <source>17</source> <!-- Adjust Java version -->
-                    <target>17</target>
-                </configuration>
-            </plugin>
-            <!-- Configure Surefire to include BDD tests -->
+
+            <!-- Test Runner Plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>${mavenSurefirePlugin.version}</version>
+                <version>${maven.surefire.plugin.version}</version>
                 <configuration>
-                    <!-- Include BDD tests -->
-                    <additionalClasspathElements>
-                        <additionalClasspathElement>${project.basedir}/src/bdd/java</additionalClasspathElement>
-                    </additionalClasspathElements>
                     <includes>
-                        <include>**/bdd/**/*.java</include> <!-- BDD test pattern -->
+                        <include>**/*Test.java</include>
+                        <include>**/*Tests.java</include>
+                        <include>**/*Runner.java</include>
                     </includes>
+                    <systemPropertyVariables>
+                        <serenity.outputDirectory>src/test/resources/SerenityReports</serenity.outputDirectory>
+                    </systemPropertyVariables>
                 </configuration>
-            </plugin>
-            <!-- Resource plugin for the BDD resources -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>${mavenResourcesPlugin.version}</version>
-                <executions>
-                    <execution>
-                        <id>copy-resources</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${project.build.directory}/classes</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>src/bdd/resources</directory>
-                                    <filtering>true</filtering>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>${mavenSurefirePlugin.version}</version>
-                <executions>
-                    <!-- Custom execution for bddTest -->
-                    <execution>
-                        <id>bddTest</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>test</goal>
-                        </goals>
-                        <configuration>
-                            <includes>
-                                <include>**/ApiTestRunner.class</include> <!-- Include only the Runner class -->
-                            </includes>
-                            <!-- Pass system properties if required -->
-                            <systemProperties>
-                                <!-- Example property -->
-                            </systemProperties>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>
-
 </project>
