@@ -1,5 +1,6 @@
 package com.ratnakar.framework.PageObjects.TestUtils;
 
+import com.ratnakar.framework.PageObjects.BaseTest.EcommerceWebBaseTest;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
@@ -15,11 +16,12 @@ public class CaptureScreenshot {
         this.driver = driver;
     }
 
-    public File getScreenshot(String testCaseName) throws IOException {
+    public String getScreenshot(String testCaseName, WebDriver driver) throws IOException {
+        String fileDestination = "src/bdd/resources/TestScreenshots/"+testCaseName+".png";
         TakesScreenshot takesScreenshot = (TakesScreenshot)driver;
         File source = takesScreenshot.getScreenshotAs(OutputType.FILE);
-        File file = new File("src/bdd/resources/TestScreenshots/"+testCaseName+".png");
+        File file = new File(fileDestination);
         FileUtils.copyFile(source, file);
-        return file;
+        return fileDestination;
     }
 }

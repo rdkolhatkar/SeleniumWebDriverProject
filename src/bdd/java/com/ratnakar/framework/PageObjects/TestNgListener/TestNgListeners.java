@@ -10,14 +10,21 @@ import com.aventstack.extentreports.Status;         // Enum to define test statu
 import com.ratnakar.framework.PageObjects.ExtentReports.ExtentReporterEngine;
 
 // Importing TestNG listener interfaces and related result/context classes
+import com.ratnakar.framework.PageObjects.TestUtils.CaptureScreenshot;
+import org.openqa.selenium.WebDriver;
 import org.testng.ITestContext;  // Provides information about the current test context
 import org.testng.ITestListener; // Interface that allows you to listen to test events (start, success, failure, etc.)
 import org.testng.ITestResult;   // Holds details about a specific test result (like name, status, exception, etc.)
 
+import java.io.IOException;
+
 // This class implements TestNG's ITestListener interface
 // It allows you to perform custom actions when tests start, pass, fail, or finish.
 // Commonly used to integrate reporting tools such as ExtentReports.
-public class TestNgListeners implements ITestListener {
+public class TestNgListeners extends CaptureScreenshot implements ITestListener {
+
+    // Declare the WebDriver
+    WebDriver driver;
 
     // Declares an ExtentTest reference for logging individual test case information
     ExtentTest test;
@@ -26,6 +33,16 @@ public class TestNgListeners implements ITestListener {
     // This ensures the same report object is shared across all tests
     ExtentReports extentReports = ExtentReporterEngine.getReportObject();
 
+    // ✅ Required by TestNG (no-args constructor)
+    public TestNgListeners() {
+        super(null); // parent constructor requires a WebDriver, so we pass null
+    }
+
+    // Optional: keeps your existing constructor for manual use (not used by TestNG)
+    public TestNgListeners(WebDriver driver) {
+        super(driver);
+        this.driver = driver;
+    }
 
     // This method runs automatically BEFORE each test method starts execution.
     // It helps in creating a new test entry in the Extent Report.
@@ -61,6 +78,21 @@ public class TestNgListeners implements ITestListener {
         // Logs the exception or error that caused the failure
         // 'getThrowable()' returns the actual exception that was thrown
         test.fail(result.getThrowable());
+        // Extract driver from the test case
+        // Below code is used for extracting the driver
+        try {
+            driver = (WebDriver) result.getTestClass().getRealClass().getField("driver").get(result.getInstance());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        // Attach the ScreenShots to test
+        String filePath;
+        try {
+            filePath  = getScreenshot(result.getMethod().getMethodName(), driver);
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
+        test.addScreenCaptureFromPath(filePath, result.getMethod().getMethodName());
     }
 
 
