@@ -44,6 +44,9 @@ public class TestNgListeners extends CaptureScreenshot implements ITestListener 
         this.driver = driver;
     }
 
+    // To make our test thread safe we use the ThreadLocal Class
+    ThreadLocal<ExtentTest> extentThread = new ThreadLocal();
+
     // This method runs automatically BEFORE each test method starts execution.
     // It helps in creating a new test entry in the Extent Report.
     @Override
@@ -54,6 +57,8 @@ public class TestNgListeners extends CaptureScreenshot implements ITestListener 
         // Creates a new test node in the Extent report using the test method's name
         // Example: if the test method name is "verifyLogin", it will create a section titled "verifyLogin" in the report
         test = extentReports.createTest(result.getMethod().getMethodName());
+        // To make our tests thread safe use below code
+        extentThread.set(test); // This will assign a unique thread ID
     }
 
 
@@ -65,7 +70,8 @@ public class TestNgListeners extends CaptureScreenshot implements ITestListener 
 
         // Logs a PASS status message into the Extent Report
         // The message will appear under the respective test node in the report
-        test.log(Status.PASS, "Test Execution is Successful");
+        // extentThread.get() -> will only pass the current test instance thread
+        extentThread.get().log(Status.PASS, "Test Execution is Successful");
     }
 
 
@@ -77,7 +83,7 @@ public class TestNgListeners extends CaptureScreenshot implements ITestListener 
 
         // Logs the exception or error that caused the failure
         // 'getThrowable()' returns the actual exception that was thrown
-        test.fail(result.getThrowable());
+        extentThread.get().fail(result.getThrowable());
         // Extract driver from the test case
         // Below code is used for extracting the driver
         try {
@@ -92,7 +98,7 @@ public class TestNgListeners extends CaptureScreenshot implements ITestListener 
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
-        test.addScreenCaptureFromPath(filePath, result.getMethod().getMethodName());
+        extentThread.get().addScreenCaptureFromPath(filePath, result.getMethod().getMethodName());
     }
 
 

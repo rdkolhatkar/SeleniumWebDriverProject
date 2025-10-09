@@ -7,13 +7,14 @@ import com.ratnakar.framework.PageObjects.CheckOutPage.EcommerceWebCheckoutPage;
 import com.ratnakar.framework.PageObjects.ConfirmOrder.EcommerceWebOrderConfirmationPage;
 import com.ratnakar.framework.PageObjects.OrderPage.EcommerceWebOrderPage;
 import com.ratnakar.framework.PageObjects.ProductPage.EcommerceWebProductCatalogue;
+import com.ratnakar.framework.PageObjects.RetryMechanism.RetryFlakyTests;
 import org.junit.Assert;
 import org.testng.annotations.Test;
 
 
 public class EcommerceWebTest extends EcommerceWebBaseTest {
     String productName = "ZARA COAT 3";
-    @Test
+    @Test(retryAnalyzer = RetryFlakyTests.class) // Implementing retry mechanism
     public void EcommerceWebApplicationTest() throws InterruptedException {
         // Calling the Methods from LoginPage for accessing Ecommerce Web Application
         EcommerceWebProductCatalogue ecommerceWebProductCatalogue = loginPage.loginToEcommerceWebApplication("ratnakarkolhatkar@gmail.com", "Ratanlord@1409");
