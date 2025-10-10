@@ -14,12 +14,10 @@
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <!-- Serenity Versions -->
+        <!-- Dependency Versions -->
         <serenity.version>4.2.12</serenity.version>
         <serenity.cucumber.version>4.2.3</serenity.cucumber.version>
         <serenity.restassured.version>4.2.3</serenity.restassured.version>
-
-        <!-- Other Dependencies -->
         <selenium.version>4.25.0</selenium.version>
         <testng.version>7.10.2</testng.version>
         <junit.version>4.13.2</junit.version>
@@ -33,7 +31,7 @@
         <jackson.databind.version>2.17.2</jackson.databind.version>
         <extent.reports.version>5.1.2</extent.reports.version>
 
-        <!-- Maven Plugins -->
+        <!-- Plugin Versions -->
         <maven.surefire.plugin.version>3.2.5</maven.surefire.plugin.version>
         <maven.compiler.plugin.version>3.13.0</maven.compiler.plugin.version>
         <build.helper.plugin.version>3.6.0</build.helper.plugin.version>
@@ -46,16 +44,12 @@
         </repository>
     </repositories>
 
+    <!-- ================= Dependencies ================= -->
     <dependencies>
-        <!-- Serenity Core & Integration -->
+        <!-- Serenity -->
         <dependency>
             <groupId>net.serenity-bdd</groupId>
             <artifactId>serenity-core</artifactId>
-            <version>${serenity.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>net.serenity-bdd</groupId>
-            <artifactId>serenity-junit</artifactId>
             <version>${serenity.version}</version>
         </dependency>
         <dependency>
@@ -88,9 +82,9 @@
 
         <!-- Testing Frameworks -->
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>${junit.version}</version>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>${testng.version}</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -102,11 +96,6 @@
             <artifactId>junit-jupiter-engine</artifactId>
             <version>${junit.jupiter.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <version>${testng.version}</version>
-        </dependency>
 
         <!-- Reporting -->
         <dependency>
@@ -115,7 +104,7 @@
             <version>${extent.reports.version}</version>
         </dependency>
 
-        <!-- Utility -->
+        <!-- Utilities -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
@@ -144,12 +133,94 @@
         </dependency>
     </dependencies>
 
+    <!-- ================= Profiles ================= -->
+    <profiles>
+        <profile>
+            <id>Regression</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <suiteXmlFiles>
+                                <suiteXmlFile>testSuites/retryTestSuiteMechanism.xml</suiteXmlFile>
+                            </suiteXmlFiles>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>Integration</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <suiteXmlFiles>
+                                <suiteXmlFile>testSuites/testNgListeners.xml</suiteXmlFile>
+                            </suiteXmlFiles>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>Smoke</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <suiteXmlFiles>
+                                <suiteXmlFile>testSuites/errorValidationSuite.xml</suiteXmlFile>
+                            </suiteXmlFiles>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>EndToEnd</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <suiteXmlFiles>
+                                <suiteXmlFile>testSuites/testNgMavenConfig.xml</suiteXmlFile>
+                            </suiteXmlFiles>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+    <!-- ================= Build Configuration ================= -->
     <build>
         <sourceDirectory>src/main/java</sourceDirectory>
         <testSourceDirectory>src/test/java</testSourceDirectory>
 
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${maven.surefire.plugin.version}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
         <plugins>
-            <!-- Include extra source directories -->
+            <!-- Add extra test source directories -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
@@ -171,18 +242,18 @@
                 </executions>
             </plugin>
 
-            <!-- Compile with Java 17 -->
+            <!-- Java Compiler -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven.compiler.plugin.version}</version>
                 <configuration>
-                    <source>17</source>
-                    <target>17</target>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
                 </configuration>
             </plugin>
 
-            <!-- Serenity Report Aggregation -->
+            <!-- Serenity Report Generator -->
             <plugin>
                 <groupId>net.serenity-bdd.maven.plugins</groupId>
                 <artifactId>serenity-maven-plugin</artifactId>
@@ -198,7 +269,7 @@
                 </executions>
             </plugin>
 
-            <!-- Test Runner Plugin -->
+            <!-- Default Test Runner -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>

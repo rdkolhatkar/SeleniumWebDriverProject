@@ -1,2 +1,50 @@
 Selenium Official Documentation: https://www.selenium.dev/documentation/
 TestNG Official Documentation: https://testng.org/
+----------------------------------------------------------------------------------------------
+Maven Commands to build and execute the automation test suite
+1) Maven & TestNG Integration Documentation Link: https://maven.apache.org/surefire/maven-surefire-plugin/examples/testng.html
+2) Install "maven-surefire-plugin" in the pom.xml
+3) Refer the below template for configuring the test id with specific testNg.xml file as a test suite
+4) After successful configuration run the command : mvn test -P<Test suite profile id>
+Example:
+1) mvn test -PRegression
+2) mvn clean test -PEndToEnd
+<profiles>
+        <profile>
+            <id>Regression</id>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-surefire-plugin</artifactId>
+                            <version>${maven.surefire.plugin.version}</version>
+                            <configuration>
+                                <suiteXmlFiles>testSuites/retryTestSuiteMechanism.xml</suiteXmlFiles>
+                            </configuration>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
+        </profile>
+</profiles>
+------------------------------------------------------------------------------------------------------------------------------------------------
+If above configuration didn't worked then use below configuration by removing the <pluginManagement></pluginManagement>
+<profile>
+    <id>EndToEnd</id>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven.surefire.plugin.version}</version>
+                <configuration>
+                    <suiteXmlFiles>
+                        <suiteXmlFile>testSuites/testNgMavenConfig.xml</suiteXmlFile>
+                    </suiteXmlFiles>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</profile>
+
