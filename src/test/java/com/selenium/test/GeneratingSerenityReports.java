@@ -1,9 +1,9 @@
 package com.selenium.test;
 
+import io.cucumber.junit.Cucumber;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import net.serenitybdd.annotations.Managed;
 import net.serenitybdd.core.annotations.findby.By;
-import net.serenitybdd.junit.runners.SerenityRunner;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,7 +15,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 import java.util.List;
-@RunWith(SerenityRunner.class)
+@RunWith(Cucumber.class)
 public class GeneratingSerenityReports {
 
     // Serenity automatically manages the WebDriver instance
