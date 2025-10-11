@@ -191,6 +191,7 @@
             </build>
         </profile>
 
+        <!-- ===== Optimized EndToEnd Profile ===== -->
         <profile>
             <id>EndToEnd</id>
             <build>
@@ -198,10 +199,28 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-surefire-plugin</artifactId>
+                        <version>${maven.surefire.plugin.version}</version>
                         <configuration>
+                            <!-- Force TestNG -->
+                            <testNGArtifactName>org.testng:testng</testNGArtifactName>
+
+                            <!-- Only pick src/bdd/java tests -->
+                            <testSourceDirectory>src/bdd/java</testSourceDirectory>
+                            <includes>
+                                <include>**/*Test.java</include>
+                                <include>**/*Tests.java</include>
+                                <include>**/*Runner.java</include>
+                            </includes>
+
+                            <!-- TestNG Suite -->
                             <suiteXmlFiles>
                                 <suiteXmlFile>testSuites/testNgMavenConfig.xml</suiteXmlFile>
                             </suiteXmlFiles>
+
+                            <!-- System properties -->
+                            <systemPropertyVariables>
+                                <serenity.outputDirectory>src/test/resources/SerenityReports</serenity.outputDirectory>
+                            </systemPropertyVariables>
                         </configuration>
                     </plugin>
                 </plugins>

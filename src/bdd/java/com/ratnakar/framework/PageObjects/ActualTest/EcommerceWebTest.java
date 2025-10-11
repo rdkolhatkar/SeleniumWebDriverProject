@@ -8,7 +8,7 @@ import com.ratnakar.framework.PageObjects.ConfirmOrder.EcommerceWebOrderConfirma
 import com.ratnakar.framework.PageObjects.OrderPage.EcommerceWebOrderPage;
 import com.ratnakar.framework.PageObjects.ProductPage.EcommerceWebProductCatalogue;
 import com.ratnakar.framework.PageObjects.RetryMechanism.RetryFlakyTests;
-import org.junit.Assert;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 

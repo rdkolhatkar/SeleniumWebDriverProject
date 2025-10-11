@@ -27,8 +27,9 @@ public class EcommerceWebBaseTest extends JsonFileReader {
         FileInputStream fileInputStream = new FileInputStream("src/bdd/resources/GlobalTestConfigurations.properties");
         properties.load(fileInputStream);
         // Now we can fetch the property based on the key value from the GlobalTestConfigurations.properties
-        String browserName = properties.getProperty("browser");
-
+        // 🧩 Ternary operator syntax:
+        // condition ? valueIfTrue : valueIfFalse
+        String browserName = System.getProperty("browserName")!=null ? System.getProperty("browserName") : properties.getProperty("browser");
         if (browserName.equalsIgnoreCase("chrome")) {
             WebDriverManager.chromedriver().setup();
             driver = new ChromeDriver();

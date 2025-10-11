@@ -47,4 +47,9 @@ If above configuration didn't worked then use below configuration by removing th
         </plugins>
     </build>
 </profile>
+---------------------------------------------------------------------------------------------------------------------------------------------------------------
+Sending runtime parameters with maven command
+1) Passing browser name as parameter mvn clean test -P<test suite Name> -DbrowserName=<browserName>
+Example: mvn clean test -PEndToEnd -DbrowserName=Firefox
+
 
