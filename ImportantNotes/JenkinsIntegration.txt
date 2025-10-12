@@ -1,0 +1,20 @@
+Install Jenkins
+1) Go to the website "https://www.jenkins.io/download/"
+2) Download jenkins.war file
+3) run the command "java -jar jenkins.war --httpPort=9081"
+4) Access Jenkins at: http://localhost:9081
+5) If you want Jenkins to use a fixed home path (instead of defaulting to .jenkins in your user folder):
+Command: java -DJENKINS_HOME="D:\JenkinsHome" -jar jenkins.war --httpPort=9081
+-------------------------------------------------------------------------------------------------------------------------
+1) Click on "new Item"
+2) Write the name of your Jenkins Job
+3) Select a Freestyle Project and click on ok
+4) Now configuration page will open and over there search for "Source Code Management"
+5) If you want to import your project on jenkins, directly from github then select "Git" radio button and give the GitHub repo url
+6) To import project from your local device select "Advanced" Option and Search for "Use Custom WorkSpace" and over there give the custom workspace directory path
+7) Now go to the "Build" option on jenkins and use the option called "Invoke Top Level Mave Targets"
+8) Inside the "Goals" option you have to pass your mvn command, example command: test -PRegression -Dbrowser=Chrome
+9) Important note: pom.xml file should be present inside your custom workspace directory path
+10) Parameterize your jenkins Job by clicking on the checkbox called this "project is parameterized"
+11) Inside the box called "Choice Parameter" Give the "Name" attribute as Parameter name like <browser> in our case and "Choices" attribute as <chrome, firefox, edge, etc.>
+12) Now Inside the "Goals" option you have to pass parameterized command: test -PRegression -Dbrowser=${browser}

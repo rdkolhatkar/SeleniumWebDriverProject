@@ -30,6 +30,7 @@
         <webdrivermanager.version>6.3.2</webdrivermanager.version>
         <jackson.databind.version>2.17.2</jackson.databind.version>
         <extent.reports.version>5.1.2</extent.reports.version>
+        <junit.jupiter.param>5.10.2</junit.jupiter.param>
 
         <!-- Plugin Versions -->
         <maven.surefire.plugin.version>3.2.5</maven.surefire.plugin.version>
@@ -100,6 +101,11 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>${junit.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
+            <version>${junit.jupiter.param}</version>
         </dependency>
 
         <!-- Reporting -->
