@@ -1,15 +1,11 @@
-```markdown
 # 🚀 Selenium WebDriver Project
 
 This project is a **Selenium WebDriver-based automation framework** written in **Java**.  
 It uses **Maven** for dependency management and **TestNG** for test execution.
 
----
-
 ## 📂 Project Structure
 
 ```
-
 src/
 ├── main/
 │   └── java/
@@ -21,11 +17,7 @@ src/
 │       └── com/
 │           └── ratnakar/
 │               └── testng/     # TestNG test classes
-
-````
-
----
-
+```
 ## ✅ Prerequisites
 
 - **Java**: JDK 8 or higher (Java 17 recommended)
