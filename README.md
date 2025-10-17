@@ -1,5 +1,3 @@
-Got it 👍 — I’ll give you **one single `README.md` file** as a complete unit so you can copy it in one go without breaking sections. Here it is:
-
 ```markdown
 # 🚀 Selenium WebDriver Project
 
@@ -167,15 +165,3 @@ public class ClientAppTest {
 5. Open a Pull Request 🎉
 
 ---
-
-## 📜 License
-
-This project is licensed under the **MIT License**.
-See the [LICENSE](LICENSE) file for details.
-
-```
-
-👉 Now you can copy this whole block in **one click** and paste it directly into your `README.md`.  
-
-Do you also want me to add a **ready-made `pom.xml`** so that Selenium, TestNG, and WebDriverManager dependencies are already set up?
-```
