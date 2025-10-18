@@ -146,6 +146,61 @@
 
     <!-- ================= Profiles ================= -->
     <profiles>
+        <!-- 🧪 Default profile using TestNG -->
+        <profile>
+            <id>Integration</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>${maven.surefire.plugin.version}</version>
+                        <configuration>
+                            <!-- Keep your suite files -->
+                            <suiteXmlFiles>
+                                <suiteXmlFile>testSuites/pageObjectsTestSuite.xml</suiteXmlFile>
+                            </suiteXmlFiles>
+                            <!-- Tell Surefire to use TestNG provider -->
+                            <testNGArtifactName>org.testng:testng</testNGArtifactName>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <!-- 🧩 Optional profile to run JUnit 5 tests -->
+        <profile>
+            <id>UnitTest</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>${maven.surefire.plugin.version}</version>
+                        <configuration>
+                            <!-- Run all *Test.java and *Tests.java -->
+                            <includes>
+                                <include>**/*Test.java</include>
+                                <include>**/*Tests.java</include>
+                            </includes>
+                            <!-- Disable module path to avoid classloading issues -->
+                            <useModulePath>false</useModulePath>
+                        </configuration>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.junit.platform</groupId>
+                                <artifactId>junit-platform-launcher</artifactId>
+                                <version>1.11.0</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
         <profile>
             <id>Regression</id>
             <build>
@@ -164,7 +219,7 @@
         </profile>
 
         <profile>
-            <id>Integration</id>
+            <id>Acceptance</id>
             <build>
                 <plugins>
                     <plugin>
@@ -172,7 +227,7 @@
                         <artifactId>maven-surefire-plugin</artifactId>
                         <configuration>
                             <suiteXmlFiles>
-                                <suiteXmlFile>testSuites/testNgListeners.xml</suiteXmlFile>
+                                <suiteXmlFile>testSuites/pageObjectsTestSuite.xml</suiteXmlFile>
                             </suiteXmlFiles>
                         </configuration>
                     </plugin>

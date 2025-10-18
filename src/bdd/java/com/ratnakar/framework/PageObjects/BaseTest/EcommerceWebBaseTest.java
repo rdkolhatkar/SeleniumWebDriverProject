@@ -3,10 +3,14 @@ package com.ratnakar.framework.PageObjects.BaseTest;
 import com.ratnakar.framework.PageObjects.TestUtils.JsonFileReader;
 import com.ratnakar.framework.PageObjects.LoginPage.EcommerceWebLoginPage;
 import io.github.bonigarcia.wdm.WebDriverManager;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 
@@ -29,23 +33,68 @@ public class EcommerceWebBaseTest extends JsonFileReader {
         // Now we can fetch the property based on the key value from the GlobalTestConfigurations.properties
         // 🧩 Ternary operator syntax:
         // condition ? valueIfTrue : valueIfFalse
-        String browserName = System.getProperty("browserName")!=null ? System.getProperty("browserName") : properties.getProperty("browser");
-        if (browserName.equalsIgnoreCase("chrome")) {
-            WebDriverManager.chromedriver().setup();
-            driver = new ChromeDriver();
-        } else if (browserName.equalsIgnoreCase("firefox")) {
-            WebDriverManager.firefoxdriver().setup();
-            driver = new FirefoxDriver();
-        } else if (browserName.equalsIgnoreCase("edge")) {
-            WebDriverManager.edgedriver().setup();
-            driver = new EdgeDriver();
-        } else {
-            throw new IllegalArgumentException(
-                    "Browser Name is not defined in GlobalTestConfigurations.properties: " + browserName
-            );
+        // Read browser name: either from system property or from properties file
+        String browserName = System.getProperty("browserName") != null
+                ? System.getProperty("browserName")
+                : properties.getProperty("browser");
+
+        // Read headless mode flag (default = false)
+        String headlessProperty = System.getProperty("headless") != null
+                ? System.getProperty("headless")
+                : properties.getProperty("headless", "false");
+
+        boolean isHeadless = Boolean.parseBoolean(headlessProperty.trim());
+
+        if (browserName == null || browserName.isEmpty()) {
+            throw new IllegalArgumentException("Browser name is not provided in configuration file or system property.");
         }
+
+        browserName = browserName.trim().toLowerCase();
+        System.out.println("Launching browser: " + browserName + " | Headless: " + isHeadless);
+
+        // ================================
+        // Chrome Browser
+        // ================================
+        if (browserName.equals("chrome")) {
+            WebDriverManager.chromedriver().setup();
+            ChromeOptions options = new ChromeOptions();
+            if (isHeadless) {
+                options.addArguments("--headless=new");
+            }
+            driver = new ChromeDriver(options);
+
+            // ================================
+            // Firefox Browser
+            // ================================
+        } else if (browserName.equals("firefox")) {
+            WebDriverManager.firefoxdriver().setup();
+            FirefoxOptions options = new FirefoxOptions();
+            if (isHeadless) {
+                options.addArguments("--headless");
+            }
+            driver = new FirefoxDriver(options);
+
+            // ================================
+            // Edge Browser
+            // ================================
+        } else if (browserName.equals("edge")) {
+            WebDriverManager.edgedriver().setup();
+            EdgeOptions options = new EdgeOptions();
+            if (isHeadless) {
+                options.addArguments("--headless");
+            }
+            driver = new EdgeDriver(options);
+
+        } else {
+            throw new IllegalArgumentException("Invalid browser name: " + browserName);
+        }
+
+        // Common setup
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
-        driver.manage().window().maximize();
+        driver.manage().window().setSize(new Dimension(1440, 900));
+        if (!isHeadless) {
+            driver.manage().window().maximize();
+        }
 
         return driver;
     }
