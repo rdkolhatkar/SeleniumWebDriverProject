@@ -17,6 +17,7 @@ public class StepDefinitions extends EcommerceWebBaseTest {
     public EcommerceWebCartPage cartPage;
     public  EcommerceWebCheckoutPage checkoutPage;
     public  EcommerceWebOrderConfirmationPage orderConfirmationPage;
+    public String actualErrorMessage;
 
     @Given("User is on the Ecommerce web application login page")
     public void user_is_on_the_ecommerce_web_application_login_page() throws IOException {
@@ -57,6 +58,21 @@ public class StepDefinitions extends EcommerceWebBaseTest {
     public void user_should_see_the_order_confirmation_message(String message) {
         String confirmMessage = orderConfirmationPage.getOrderConfirmationMessage();
         Assert.assertTrue(confirmMessage.equalsIgnoreCase(message));
+        driver.quit();
+    }
+
+    @Given("I am on the login page")
+    public void iAmOnTheLoginPage() throws IOException {
+        landingPage = launchEcommerceWebApp();
+    }
+    @When("I login with invalid credentials {string} and {string}")
+    public void iLoginWithInvalidCredentialsAnd(String userEmail, String password) {
+        landingPage.loginToEcommerceWebApplication(userEmail, password);
+        actualErrorMessage = loginPage.getLoginErrorMessage();
+    }
+    @Then("I should see an error message {string}")
+    public void iShouldSeeAnErrorMessage(String expectedErrorMessage) {
+        Assert.assertEquals(actualErrorMessage, expectedErrorMessage);
         driver.quit();
     }
 }
