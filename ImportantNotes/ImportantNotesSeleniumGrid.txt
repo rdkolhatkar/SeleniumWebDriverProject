@@ -1,0 +1,33 @@
+Official Documentation link : https://www.selenium.dev/documentation/grid/
+-----------------------------------------------------------------------------------------------------------------
+Selenium Grid SetUp:
+1) First We have to download the Selenium Server (Grid) Jar from the official downloads link
+2) Go to "https://www.selenium.dev/downloads/" & search for "Remote Selenium WebDriver (Grid)"
+3) Click on the Download to download the latest version of Remote Selenium WebDriver (Grid)
+4) Then Download the ChromeDriver and Other Drivers like GeckoDriver, EdgeDriver etc. which is compatible with browser version
+Instructions for Downloading the ChromeDriver Versions above  version 115 or newer
+    -> Go to https://www.google.com
+    -> Type "Chrome for Testing" it will navigate you to the official 'Chrome For Developers' page
+    -> On that page Search for 'Download' option and then click on the link called 'the Chrome for Testing availability dashboard'
+    -> You can also refer the official GitHub page : https://github.com/GoogleChromeLabs/chrome-for-testing
+    -> From there you can find the JSON API endpoints and URL with which you can download the chromedriver-win64.zip
+5) Place the chrome.zip in the same folder where you have downloaded the Remote Selenium WebDriver (Grid)
+6) Extract that chrome.zip file, Then you will see two files one is 'chromedriver-win64' & second is 'selenium-server-4.39.0.jar'
+7) Now to start the Selenium Grid you have to open the Git Bash inside the same parent folder where you have downloaded the 'chromedriver-win64.zip' & 'selenium-server-4.39.0.jar'
+8) Then run the command 'java -jar <SeleniumJarName> hub' Example : "java -jar selenium-server-4.39.0.jar hub"
+9) Once your Hub started then to check if it is working or not you have to open the browser and hit the url "http://localhost:4444/ui/"
+10) You will see the Selenium Hub started on localhost:4444 which means our Hub is running
+11) To start the Node open a new GitBash inside the same folder where you have 'chromedriver-win64.zip' & 'selenium-server-4.39.0.jar'
+12) Then run the command 'java -jar <SeleniumJarName> node --detect-drivers true --publish-events tcp://<ipAddressOfHub> --subscribe-events tcp://<ipAddressOfHub>'
+Refer first example if you have Node as Well as Hub running in same machine
+Example: java -jar selenium-server-4.39.0.jar node --detect-drivers true
+Refer Second example if you have Node and Hub running in different machine
+Example with tcp port number : java -jar selenium-server-4.39.0.jar node --detect-drivers true --publish-events tcp://172.30.176.1:4442 --subscribe-events tcp://172.30.176.1:4443
+13) Stop Hub or Node running in same machine
+    -> Click inside the terminal or GitBash and press 'CTRL + C'
+    -> If Hub/Node is running in another terminal or in the background then use command 'ps -ef | grep selenium' you will see the below output
+       'ratnakar   2345   1  java -jar selenium-server-4.39.0.jar hub' Here 2345 this is the process number
+       Now run the command 'kill 2345' or 'kill -9 2345'
+    -> Kill all Selenium Java processes use command 'taskkill //IM java.exe //F'
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
