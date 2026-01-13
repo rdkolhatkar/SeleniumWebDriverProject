@@ -32,6 +32,8 @@
         <extent.reports.version>5.1.2</extent.reports.version>
         <junit.jupiter.param>5.10.2</junit.jupiter.param>
         <cucumber.testNg.version>7.20.1</cucumber.testNg.version>
+        <apache.Poi.Version>5.4.1</apache.Poi.Version>
+        <apache.Poi.Ooxml>5.4.1</apache.Poi.Ooxml>
 
         <!-- Plugin Versions -->
         <maven.surefire.plugin.version>3.2.5</maven.surefire.plugin.version>
@@ -152,6 +154,19 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.13.2</version>
+            <scope>compile</scope>
+        </dependency>
+        <!-- Apache POI - Java API To Access Microsoft Format Files -->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>${apache.Poi.Version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>${apache.Poi.Ooxml}</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
