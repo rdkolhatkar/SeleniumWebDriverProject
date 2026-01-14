@@ -1,10 +1,11 @@
 package com.cucumber.test.utility;
 
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
-import java.io.File;
 import java.io.FileInputStream;
+import java.util.Iterator;
 
 public class ReadDataFromExcel {
     public static void main(String[] args) {
@@ -21,6 +22,18 @@ public class ReadDataFromExcel {
                 // Fetching Specific Sheet By name
                 if(workbook.getSheetName(i).equalsIgnoreCase("Data")){
                     XSSFSheet sheet = workbook.getSheetAt(i);
+                    //Identify the userName column by scanning the entire first row
+                    Iterator<Row> rows = sheet.iterator();
+                    Row firstRow = rows.next(); // Now we are on the first row
+                    // Now we have to read each and every cell present in the first row
+                    Iterator<Cell> cell = firstRow.cellIterator();
+                    // Now to check each and every cell we will be using while loop
+                    while (cell.hasNext()){
+                       Cell cellValue = cell.next();
+                       if(cellValue.getStringCellValue().equalsIgnoreCase("userName")){
+                           // This is our Desired Column
+                       }
+                    }
                 }
             }
 
