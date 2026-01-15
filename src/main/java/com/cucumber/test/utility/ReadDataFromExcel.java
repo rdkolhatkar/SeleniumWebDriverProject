@@ -28,11 +28,30 @@ public class ReadDataFromExcel {
                     // Now we have to read each and every cell present in the first row
                     Iterator<Cell> cell = firstRow.cellIterator();
                     // Now to check each and every cell we will be using while loop
+                    // To get the column of the desire index we have to check each index one by one
+                    // To check each index we will define a integer which will increment after each iteration
+                    int k =0;
+                    int column = 0;
                     while (cell.hasNext()){
                        Cell cellValue = cell.next();
                        if(cellValue.getStringCellValue().equalsIgnoreCase("userName")){
-                           // This is our Desired Column
+                           // This will check each column by index value equal to 'k'
+                           column = k;
                        }
+                       k++;
+                    }
+                    System.out.println("Index value of column with name 'userName' is : "+column);
+                    // Now we will check all the rows and each cell present in every row
+                    while (rows.hasNext()){
+                        Row row = rows.next();
+                        // Now we will scan each column index for all rows for finding specific userName
+                        if(row.getCell(column).getStringCellValue().equalsIgnoreCase("rohit_p")){
+                            Iterator<Cell> cellValue = row.cellIterator();
+                            while (cellValue.hasNext()){
+                                String value = cellValue.next().toString(); // Convert numeric value to String
+                                System.out.println(value);
+                            }
+                        }
                     }
                 }
             }
