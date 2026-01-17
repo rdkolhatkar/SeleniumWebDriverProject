@@ -1,15 +1,20 @@
 package com.selenium.test;
 
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.util.NumberToTextConverter;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.io.FileInputStream;
+import java.util.ArrayList;
 import java.util.Iterator;
 
 public class ReadDataFromExcel {
     public static void main(String[] args) {
         try {
+            // Defining one ArrayList to catch and collect data from each cell for a specific row
+            ArrayList<String> data = new ArrayList<>();
             // Defining the Excel file path Using FileInputStream
             FileInputStream fileInputStream = new FileInputStream("src/main/resources/files/TestData.xlsx");
             // Apache POI dependency to read the data from Excel Sheet
@@ -48,9 +53,16 @@ public class ReadDataFromExcel {
                         if(row.getCell(column).getStringCellValue().equalsIgnoreCase("rohit_p")){
                             Iterator<Cell> cellValue = row.cellIterator();
                             while (cellValue.hasNext()){
-                                String value = cellValue.next().toString(); // Convert numeric value to String
-                                System.out.println(value);
+                                Cell cellData = cellValue.next();
+                                if(cellData.getCellType() == CellType.STRING){
+                                    data.add(cellData.getStringCellValue());
+                                }else {
+                                    data.add(NumberToTextConverter.toText(cellData.getNumericCellValue()));
+                                }
+//                                String value = cellValue.next().toString(); // Convert numeric value to String
+//                                System.out.println(value);
                             }
+                            System.out.println(data);
                         }
                     }
                 }
