@@ -16,7 +16,7 @@ public class ReadDataFromExcel {
             // Defining one ArrayList to catch and collect data from each cell for a specific row
             ArrayList<String> data = new ArrayList<>();
             // Defining the Excel file path Using FileInputStream
-            FileInputStream fileInputStream = new FileInputStream("src/main/resources/files/TestData.xlsx");
+            FileInputStream fileInputStream = new FileInputStream("src/test/resources/dataFiles/TestData.xlsx");
             // Apache POI dependency to read the data from Excel Sheet
             XSSFWorkbook workbook = new XSSFWorkbook(fileInputStream);
             // We have multiple sheets in the same Excel File,
