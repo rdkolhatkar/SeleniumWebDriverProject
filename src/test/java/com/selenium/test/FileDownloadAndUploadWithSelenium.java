@@ -1,5 +1,8 @@
 package com.selenium.test;
 
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -10,6 +13,8 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.lang.reflect.Method;
 import java.nio.file.Paths;
 import java.time.Duration;
@@ -63,6 +68,32 @@ public class FileDownloadAndUploadWithSelenium {
             throw new RuntimeException("Download failed: Excel file not found");
         }
         System.out.println("Excel file downloaded successfully!");
+        // Step 6: Update Excel (Apple → price = 400)
+        try (FileInputStream fis = new FileInputStream(file);
+             XSSFWorkbook workbook = new XSSFWorkbook(fis)) {
+            XSSFSheet sheet = workbook.getSheet("Sheet1");
+            Row headerRow = sheet.getRow(0);
+            int fruitCol = -1;
+            int priceCol = -1;
+            for (int i = 0; i < headerRow.getLastCellNum(); i++) {
+                String header = headerRow.getCell(i).getStringCellValue();
+                if (header.equalsIgnoreCase("fruit_name")) fruitCol = i;
+                if (header.equalsIgnoreCase("price")) priceCol = i;
+            }
+            for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+                Row row = sheet.getRow(i);
+                if (row.getCell(fruitCol).getStringCellValue().equalsIgnoreCase("Apple")) {
+                    row.getCell(priceCol).setCellValue(400);
+                    System.out.println("Updated Apple price to 400");
+                    break;
+                }
+            }
+            try (FileOutputStream fos = new FileOutputStream(file)) {
+                workbook.write(fos);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     @Test
     public void FileDownloadAndUpload() throws InterruptedException {
