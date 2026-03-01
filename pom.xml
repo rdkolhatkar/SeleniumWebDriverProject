@@ -34,6 +34,7 @@
         <cucumber.testNg.version>7.20.1</cucumber.testNg.version>
         <apache.Poi.Version>5.4.1</apache.Poi.Version>
         <apache.Poi.Ooxml>5.4.1</apache.Poi.Ooxml>
+        <selenium-devtools-v145-Version>4.41.0</selenium-devtools-v145-Version>
 
         <!-- Plugin Versions -->
         <maven.surefire.plugin.version>3.2.5</maven.surefire.plugin.version>
@@ -167,6 +168,13 @@
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
             <version>${apache.Poi.Ooxml}</version>
+            <scope>compile</scope>
+        </dependency>
+        <!-- selenium-devtools-v145 -->
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-devtools-v145</artifactId>
+            <version>${selenium-devtools-v145-Version}</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
