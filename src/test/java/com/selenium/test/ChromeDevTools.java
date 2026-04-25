@@ -12,6 +12,8 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.Test;
 
 import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 public class ChromeDevTools {
@@ -93,6 +95,24 @@ public class ChromeDevTools {
         // Click Library directly (no navbar dependency)
         wait.until(ExpectedConditions.elementToBeClickable(By.linkText("Library"))).click();
 
+        driver.quit();
+    }
+
+    @Test
+    public void constructChromeDevToolsCommand() throws InterruptedException {
+        ChromeDriver driver = new ChromeDriver();
+        DevTools devTools = driver.getDevTools();
+        devTools.createSession();
+        Map<String, Object> deviceMetrics = new HashMap<String, Object>();
+        deviceMetrics.put("width", 600);
+        deviceMetrics.put("height", 1000);
+        deviceMetrics.put("deviceScaleFactor", 50);
+        deviceMetrics.put("mobile", true);
+        driver.executeCdpCommand("Emulation.setDeviceMetricsOverride", deviceMetrics);
+        driver.get("https://rahulshettyacademy.com/angularAppdemo");
+        driver.findElement(By.cssSelector(".navbar-toggler")).click();
+        Thread.sleep(3000);
+        driver.findElement(By.linkText("Library")).click();
         driver.quit();
     }
 }
