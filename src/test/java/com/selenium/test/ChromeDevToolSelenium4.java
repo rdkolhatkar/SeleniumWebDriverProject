@@ -1,12 +1,11 @@
 package com.selenium.test;
 
 import net.thucydides.core.annotations.findby.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.v145.emulation.Emulation;
 import org.openqa.selenium.devtools.v145.network.Network;
-import org.openqa.selenium.devtools.v145.network.model.Request;
-import org.openqa.selenium.devtools.v145.network.model.Response;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.Test;
@@ -16,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-public class ChromeDevTools {
+public class ChromeDevToolSelenium4 {
     @Test
     public void chromeDevToolsTest() throws InterruptedException {
         // To access the Chrome Browser Dev tools we have to explicitly create the Object of ChromeDriver class
@@ -114,5 +113,24 @@ public class ChromeDevTools {
         Thread.sleep(3000);
         driver.findElement(By.linkText("Library")).click();
         driver.quit();
+    }
+
+    @Test
+    public void localizationTestWithSetGeoLocation() throws InterruptedException {
+        ChromeDriver driver = new ChromeDriver();
+        DevTools devTools = driver.getDevTools();
+        Map<String, Object> coordinates = new HashMap<String, Object>();
+        coordinates.put("latitude", 40);
+        coordinates.put("longitude", 3);
+        coordinates.put("accuracy", 1);
+        driver.executeCdpCommand("Emulation.setGeolocationOverride", coordinates);
+        driver.get("http://geonames.org");
+        String title = driver.getTitle();
+        System.out.println(title);
+        Thread.sleep(5000);
+        driver.quit();
+
+
+
     }
 }
