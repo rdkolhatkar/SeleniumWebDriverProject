@@ -6,6 +6,8 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.v145.emulation.Emulation;
 import org.openqa.selenium.devtools.v145.network.Network;
+import org.openqa.selenium.devtools.v145.network.model.Request;
+import org.openqa.selenium.devtools.v145.network.model.Response;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.Test;
@@ -96,41 +98,229 @@ public class ChromeDevToolSelenium4 {
 
         driver.quit();
     }
-
+    /**
+     * ============================================================
+     * 🔹 Test Case: Mobile Emulation using Chrome DevTools Protocol
+     * ============================================================
+     *
+     * 📌 Purpose:
+     * This test demonstrates how to simulate a mobile device viewport
+     * using Selenium 4's Chrome DevTools Protocol (CDP).
+     *
+     * 📌 What this test does:
+     * - Overrides device screen resolution (width & height)
+     * - Sets device scale factor (pixel density)
+     * - Enables mobile view (responsive UI)
+     * - Opens a website and interacts with mobile UI elements
+     *
+     * 📌 Key CDP Command Used:
+     * Emulation.setDeviceMetricsOverride
+     *
+     * 📌 Why we use it:
+     * This allows us to test how a website behaves on mobile devices
+     * without using a real device or emulator.
+     *
+     * 📌 Real-world usage:
+     * - Responsive UI testing
+     * - Mobile-first application validation
+     * - Cross-device compatibility testing
+     *
+     * 📚 Reference (Official Website):
+     * https://chromedevtools.github.io/devtools-protocol/tot/Emulation/#method-setDeviceMetricsOverride
+     *
+     * 📚 Selenium DevTools Docs:
+     * https://www.selenium.dev/documentation/webdriver/bidirectional/chrome_devtools/
+     */
     @Test
     public void constructChromeDevToolsCommand() throws InterruptedException {
+
         ChromeDriver driver = new ChromeDriver();
+
+        // Create DevTools session (required to send CDP commands)
         DevTools devTools = driver.getDevTools();
         devTools.createSession();
+
+        // Define device metrics for mobile simulation
         Map<String, Object> deviceMetrics = new HashMap<String, Object>();
-        deviceMetrics.put("width", 600);
-        deviceMetrics.put("height", 1000);
-        deviceMetrics.put("deviceScaleFactor", 50);
-        deviceMetrics.put("mobile", true);
+        deviceMetrics.put("width", 600);               // Screen width
+        deviceMetrics.put("height", 1000);             // Screen height
+        deviceMetrics.put("deviceScaleFactor", 50);    // Pixel density
+        deviceMetrics.put("mobile", true);             // Enable mobile mode
+
+        // Execute CDP command to override device metrics
         driver.executeCdpCommand("Emulation.setDeviceMetricsOverride", deviceMetrics);
+
+        // Open application
         driver.get("https://rahulshettyacademy.com/angularAppdemo");
+
+        // Interact with mobile hamburger menu
         driver.findElement(By.cssSelector(".navbar-toggler")).click();
         Thread.sleep(3000);
+
+        // Navigate to Library section
         driver.findElement(By.linkText("Library")).click();
+
         driver.quit();
     }
 
+
+    /**
+     * ============================================================
+     * 🔹 Test Case: Geolocation & Language Simulation using CDP
+     * ============================================================
+     *
+     * 📌 Purpose:
+     * This test simulates a user's geographic location (Tokyo, Japan)
+     * and browser language using Chrome DevTools Protocol.
+     *
+     * 📌 What this test does:
+     * - Overrides browser geolocation (latitude & longitude)
+     * - Sets Accept-Language HTTP header
+     * - Opens a website and prints its title
+     *
+     * 📌 Key CDP Commands Used:
+     * 1. Emulation.setGeolocationOverride
+     * 2. Network.setExtraHTTPHeaders
+     * 3. Network.enable
+     *
+     * 📌 Important Note:
+     * - Geolocation alone DOES NOT change language
+     * - Accept-Language header influences content localization
+     * - Some websites (like :contentReference[oaicite:0]{index=0})
+     *   may ignore these settings due to cookies/account preferences
+     *
+     * 📌 Real-world usage:
+     * - Location-based testing (maps, delivery apps)
+     * - Localization testing
+     * - Geo-restricted content validation
+     *
+     * 📚 Reference (Official Website):
+     * Geolocation:
+     * https://chromedevtools.github.io/devtools-protocol/tot/Emulation/#method-setGeolocationOverride
+     *
+     * Headers:
+     * https://chromedevtools.github.io/devtools-protocol/tot/Network/#method-setExtraHTTPHeaders
+     *
+     * Network Enable:
+     * https://chromedevtools.github.io/devtools-protocol/tot/Network/#method-enable
+     */
     @Test
     public void localizationTestWithSetGeoLocation() throws InterruptedException {
+
         ChromeDriver driver = new ChromeDriver();
+
         DevTools devTools = driver.getDevTools();
-        Map<String, Object> coordinates = new HashMap<String, Object>();
-        coordinates.put("latitude", 40);
-        coordinates.put("longitude", 3);
+        devTools.createSession();
+
+        // 🌍 Set Geolocation (Tokyo, Japan)
+        Map<String, Object> coordinates = new HashMap<>();
+        coordinates.put("latitude", 35.6895);
+        coordinates.put("longitude", 139.6917);
         coordinates.put("accuracy", 1);
+
         driver.executeCdpCommand("Emulation.setGeolocationOverride", coordinates);
-        driver.get("http://geonames.org");
-        String title = driver.getTitle();
-        System.out.println(title);
+
+        // 🌐 Set browser language using Accept-Language header
+        Map<String, Object> headers = new HashMap<>();
+        headers.put("Accept-Language", "ja-JP");
+
+        driver.executeCdpCommand("Network.setExtraHTTPHeaders",
+                Map.of("headers", headers));
+
+        // Enable network tracking (required before setting headers)
+        driver.executeCdpCommand("Network.enable", new HashMap<>());
+
+        // Open website
+        driver.get("https://www.google.com");
+
+        // Print page title
+        System.out.println("Title: " + driver.getTitle());
+
         Thread.sleep(5000);
         driver.quit();
+    }
 
 
+    /**
+     * ============================================================
+     * 🔹 Test Case: Capture Network Requests & Responses using CDP
+     * ============================================================
+     *
+     * 📌 Purpose:
+     * This test captures and logs all network requests and responses
+     * made by the browser using Chrome DevTools Protocol.
+     *
+     * 📌 What this test does:
+     * - Listens to outgoing HTTP requests
+     * - Captures request URL, headers, and method
+     * - Listens to incoming responses
+     * - Captures response status, headers, and timing
+     *
+     * 📌 Key CDP Features Used:
+     * 1. Network.enable
+     * 2. Network.requestWillBeSent (Event Listener)
+     * 3. Network.responseReceived (Event Listener)
+     *
+     * 📌 Why we use it:
+     * - Debug API calls
+     * - Validate backend responses
+     * - Monitor network traffic during UI actions
+     *
+     * 📌 Real-world usage:
+     * - API validation in UI automation
+     * - Performance testing insights
+     * - Security testing (headers, cookies)
+     *
+     * 📚 Reference (Official Website):
+     * Network Domain:
+     * https://chromedevtools.github.io/devtools-protocol/tot/Network/
+     *
+     * requestWillBeSent:
+     * https://chromedevtools.github.io/devtools-protocol/tot/Network/#event-requestWillBeSent
+     *
+     * responseReceived:
+     * https://chromedevtools.github.io/devtools-protocol/tot/Network/#event-responseReceived
+     */
+    @Test
+    public void extractNetworkResponsesAndStatusCodesWithSeleniumCDP() throws InterruptedException {
 
+        ChromeDriver driver = new ChromeDriver();
+
+        DevTools devTools = driver.getDevTools();
+        devTools.createSession();
+
+        // Enable network tracking to capture requests/responses
+        devTools.send(Network.enable(Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty()));
+
+        // 🔹 Event listener for outgoing requests
+        devTools.addListener(Network.requestWillBeSent(), request -> {
+            Request networkRequest = request.getRequest();
+            System.out.println(networkRequest.getUrl());       // Request URL
+            System.out.println(networkRequest.getHeaders());   // Request headers
+            System.out.println(networkRequest.getMethod());    // HTTP method (GET/POST)
+        });
+
+        System.out.println("****************************************************************");
+
+        // 🔹 Event listener for incoming responses
+        devTools.addListener(Network.responseReceived(), response -> {
+            Response networkResponse = response.getResponse();
+            System.out.println(networkResponse.getUrl());         // Response URL
+            System.out.println(networkResponse.getStatus());      // Status code (200, 404, etc.)
+            System.out.println(networkResponse.getResponseTime());// Response time
+            System.out.println(networkResponse.getHeaders());     // Response headers
+        });
+
+        // Open application
+        driver.get("https://rahulshettyacademy.com/angularAppdemo");
+
+        Thread.sleep(2000);
+
+        // Trigger network calls by clicking button
+        driver.findElement(By.xpath("//button[text()=' Virtual Library ']")).click();
+
+        Thread.sleep(2000);
+
+        driver.close();
     }
 }

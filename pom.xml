@@ -35,6 +35,7 @@
         <apache.Poi.Version>5.4.1</apache.Poi.Version>
         <apache.Poi.Ooxml>5.4.1</apache.Poi.Ooxml>
         <selenium-devtools-v145-Version>4.41.0</selenium-devtools-v145-Version>
+        <selenium-devtools-v147-Version>4.21.0</selenium-devtools-v147-Version>
 
         <!-- Plugin Versions -->
         <maven.surefire.plugin.version>3.2.5</maven.surefire.plugin.version>
@@ -176,6 +177,11 @@
             <artifactId>selenium-devtools-v145</artifactId>
             <version>${selenium-devtools-v145-Version}</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-java</artifactId>
+            <version>${selenium-devtools-v147-Version}</version>
         </dependency>
     </dependencies>
 
