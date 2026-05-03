@@ -5,6 +5,7 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.v145.emulation.Emulation;
+import org.openqa.selenium.devtools.v145.fetch.Fetch;
 import org.openqa.selenium.devtools.v145.network.Network;
 import org.openqa.selenium.devtools.v145.network.model.Request;
 import org.openqa.selenium.devtools.v145.network.model.Response;
@@ -322,5 +323,101 @@ public class ChromeDevToolSelenium4 {
         Thread.sleep(2000);
 
         driver.close();
+    }
+    /**
+     * ============================================================
+     * 🔹 Test Case: Mock & Intercept Network API Request using CDP
+     * ============================================================
+     *
+     * 📌 Purpose:
+     * This test intercepts a backend API request using Chrome DevTools Protocol
+     * and modifies the request URL before it is sent to the server.
+     *
+     * 📌 What this test does:
+     * - Pauses outgoing network requests using Fetch domain
+     * - Identifies specific API calls based on URL pattern
+     * - Modifies query parameter value in the request (AuthorName)
+     * - Continues the request with modified data
+     * - Allows all other requests to pass through unchanged
+     *
+     * 📌 Key CDP Features Used:
+     * 1. Fetch.enable
+     *    → Enables request interception
+     *
+     * 2. Fetch.requestPaused (Event Listener)
+     *    → Triggered whenever a network request is paused
+     *
+     * 3. Fetch.continueRequest
+     *    → Used to modify and resume the intercepted request
+     *
+     * 📌 Mocking Logic:
+     * - Original API:
+     *   https://rahulshettyacademy.com/Library/GetBook.php?AuthorName=shetty
+     *
+     * - Modified API:
+     *   https://rahulshettyacademy.com/Library/GetBook.php?AuthorName=BadGuy
+     *
+     * - The test replaces "shetty" with "BadGuy" dynamically
+     *
+     * 📌 Why we use it:
+     * - Simulate different backend responses without changing server data
+     * - Test UI behavior under manipulated API conditions
+     * - Validate application handling of unexpected or edge-case data
+     *
+     * 📌 Real-world usage:
+     * - Negative testing (invalid user, no data scenarios)
+     * - Security testing (tampered request validation)
+     * - API behavior simulation during UI automation
+     *
+     * ⚠️ Important Notes:
+     * - Request body (postData) is deprecated in newer Selenium versions
+     *   → Use Optional.empty() if not required (especially for GET requests)
+     *
+     * - If API returns no data, UI elements may not render
+     *   → Always validate elements safely using findElements() or waits
+     *
+     * - CDP version mismatch warning may occur if Chrome version is newer
+     *   → Keep Selenium and ChromeDriver versions aligned
+     *
+     * 📚 Reference (Official Website):
+     * Fetch Domain:
+     * https://chromedevtools.github.io/devtools-protocol/tot/Fetch/
+     *
+     * requestPaused:
+     * https://chromedevtools.github.io/devtools-protocol/tot/Fetch/#event-requestPaused
+     *
+     * continueRequest:
+     * https://chromedevtools.github.io/devtools-protocol/tot/Fetch/#method-continueRequest
+     */
+    @Test
+    public void mockInterceptNetworkBackendApiResponseWithCDP() throws InterruptedException {
+        // Chrome Dev Tools Reference : https://chromedevtools.github.io/devtools-protocol/tot/Fetch/
+        ChromeDriver driver = new ChromeDriver();
+        DevTools devTools = driver.getDevTools();
+        devTools.createSession();
+        devTools.send(Fetch.enable(Optional.empty(), Optional.empty()));
+        devTools.addListener(Fetch.requestPaused(), requestPaused -> {
+            if(requestPaused.getRequest().getUrl().contains("shetty")){
+                String newMockedUrl = requestPaused.getRequest().getUrl().replace("=shetty", "=BadGuy");
+                System.out.println(newMockedUrl);
+                devTools.send(Fetch.continueRequest(requestPaused.getRequestId(), Optional.of(newMockedUrl), Optional.of(requestPaused.getRequest().getMethod()), requestPaused.getRequest().getPostData(), requestPaused.getResponseHeaders(), Optional.empty()));
+                // devTools.send(Fetch.continueRequest(requestPaused.getRequestId(), Optional.of(newMockedUrl), Optional.of(requestPaused.getRequest().getMethod()), requestPaused.getRequest().getPostData(), Optional.empty(), Optional.empty()));
+            }else {
+                devTools.send(Fetch.continueRequest(requestPaused.getRequestId(), Optional.of(requestPaused.getRequest().getUrl()), Optional.of(requestPaused.getRequest().getMethod()), requestPaused.getRequest().getPostData(), Optional.empty(), Optional.empty()));
+            }
+        });
+        driver.get("https://rahulshettyacademy.com/angularAppdemo");
+
+        Thread.sleep(2000);
+
+        // Trigger network calls by clicking button
+        driver.findElement(By.xpath("//button[text()=' Virtual Library ']")).click();
+
+        Thread.sleep(2000);
+
+        //System.out.println(driver.findElement(By.cssSelector("p")).getText());
+
+        driver.close();
+
     }
 }
