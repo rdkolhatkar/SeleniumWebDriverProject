@@ -1,12 +1,13 @@
 package com.selenium.test;
 
 import net.thucydides.core.annotations.findby.By;
-import org.openqa.selenium.Keys;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.devtools.DevTools;
+import org.openqa.selenium.devtools.v145.fetch.model.RequestPattern;
 import org.openqa.selenium.devtools.v145.emulation.Emulation;
 import org.openqa.selenium.devtools.v145.fetch.Fetch;
 import org.openqa.selenium.devtools.v145.network.Network;
+import org.openqa.selenium.devtools.v145.network.model.ErrorReason;
 import org.openqa.selenium.devtools.v145.network.model.Request;
 import org.openqa.selenium.devtools.v145.network.model.Response;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -14,9 +15,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.Test;
 
 import java.time.Duration;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class ChromeDevToolSelenium4 {
     @Test
@@ -415,9 +414,89 @@ public class ChromeDevToolSelenium4 {
 
         Thread.sleep(2000);
 
-        //System.out.println(driver.findElement(By.cssSelector("p")).getText());
-
         driver.close();
 
+    }
+    /**
+     * ============================================================
+     * 🔹 Test Case: Mock Network Failure for API Call using CDP
+     * ============================================================
+     *
+     * 📌 Purpose:
+     * This test simulates a backend API failure using Chrome DevTools Protocol (CDP)
+     * by intentionally blocking a specific network request.
+     *
+     * 📌 What this test does:
+     * - Intercepts outgoing network requests using Fetch domain
+     * - Filters API calls based on URL pattern (*GetBook*)
+     * - Forces the matched request to fail instead of reaching the server
+     * - Simulates real-world backend failure scenarios
+     *
+     * 📌 Key CDP Features Used:
+     * 1. Fetch.enable
+     *    → Enables request interception with specific URL pattern
+     *
+     * 2. RequestPattern
+     *    → Defines which API requests should be intercepted
+     *    → Here: Any request containing "GetBook"
+     *
+     * 3. Fetch.requestPaused (Event Listener)
+     *    → Triggered when matching request is intercepted
+     *
+     * 4. Fetch.failRequest
+     *    → Aborts the request and simulates network failure
+     *
+     * 📌 Mocking Logic:
+     * - Target API:
+     *   https://rahulshettyacademy.com/Library/GetBook.php
+     *
+     * - Behavior:
+     *   Instead of sending request to server,
+     *   the request is FAILED using:
+     *   ErrorReason.FAILED
+     *
+     * 📌 Why we use it:
+     * - Test application behavior when backend API fails
+     * - Validate error handling and fallback UI
+     * - Ensure proper error messages are displayed
+     *
+     * 📌 Real-world usage:
+     * - Network outage simulation
+     * - API downtime testing
+     * - Resilience and retry mechanism validation
+     * - Negative testing scenarios
+     *
+     * ⚠️ Important Notes:
+     * - UI should handle failure gracefully (no crashes)
+     * - Always validate error messages or fallback components
+     * - Use waits to ensure UI reacts after failure
+     *
+     * - Overuse of Thread.sleep() is not recommended
+     *   → Prefer WebDriverWait for better stability
+     *
+     * 📚 Reference (Official Website):
+     * Fetch Domain:
+     * https://chromedevtools.github.io/devtools-protocol/tot/Fetch/
+     *
+     * failRequest:
+     * https://chromedevtools.github.io/devtools-protocol/tot/Fetch/#method-failRequest
+     *
+     * RequestPattern:
+     * https://chromedevtools.github.io/devtools-protocol/tot/Fetch/#type-RequestPattern
+     */
+    @Test
+    public void mockingNetworkFailureApiCallOnWebPage() throws InterruptedException {
+        ChromeDriver driver = new ChromeDriver();
+        DevTools devTools = driver.getDevTools();
+        devTools.createSession();
+        Optional<List<RequestPattern>> patterns = Optional.of(List.of(new RequestPattern(Optional.of("*GetBook*"), Optional.empty(), Optional.empty())));
+        devTools.send(Fetch.enable(patterns, Optional.empty()));
+        devTools.addListener(Fetch.requestPaused(), requestPaused -> {
+            devTools.send(Fetch.failRequest(requestPaused.getRequestId(), ErrorReason.FAILED));
+        });
+        driver.get("https://rahulshettyacademy.com/angularAppdemo");
+        Thread.sleep(2000);
+        driver.findElement(By.xpath("//button[text()=' Virtual Library ']")).click();
+        driver.quit();
     }
 }
