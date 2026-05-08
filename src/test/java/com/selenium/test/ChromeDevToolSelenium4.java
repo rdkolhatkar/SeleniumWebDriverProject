@@ -1,5 +1,6 @@
 package com.selenium.test;
 
+import com.google.common.collect.ImmutableList;
 import net.thucydides.core.annotations.findby.By;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.devtools.DevTools;
@@ -7,6 +8,7 @@ import org.openqa.selenium.devtools.v145.fetch.model.RequestPattern;
 import org.openqa.selenium.devtools.v145.emulation.Emulation;
 import org.openqa.selenium.devtools.v145.fetch.Fetch;
 import org.openqa.selenium.devtools.v145.network.Network;
+import org.openqa.selenium.devtools.v145.network.model.BlockPattern;
 import org.openqa.selenium.devtools.v145.network.model.ErrorReason;
 import org.openqa.selenium.devtools.v145.network.model.Request;
 import org.openqa.selenium.devtools.v145.network.model.Response;
@@ -498,5 +500,109 @@ public class ChromeDevToolSelenium4 {
         Thread.sleep(2000);
         driver.findElement(By.xpath("//button[text()=' Virtual Library ']")).click();
         driver.quit();
+    }
+    /**
+     * ============================================================
+     * 🔹 Test Case: Block UI Resource Requests using CDP
+     * ============================================================
+     *
+     * 📌 Purpose:
+     * This test improves UI automation performance by blocking
+     * unnecessary frontend resource requests such as Images and CSS
+     * using Chrome DevTools Protocol (CDP).
+     *
+     * 📌 What this test does:
+     * - Enables Network domain using CDP
+     * - Blocks specific resource types based on URL patterns
+     * - Prevents Image (.jpg) and CSS (.css) files from loading
+     * - Loads the application with reduced network overhead
+     * - Measures total page interaction execution time
+     *
+     * 📌 Key CDP Features Used:
+     *
+     * 1. Network.enable
+     *    → Activates Network domain in Chrome DevTools
+     *    → Required before applying network-related configurations
+     *
+     * 2. Network.setBlockedURLs
+     *    → Blocks specific network requests before they are sent
+     *    → Here we block:
+     *      - *.jpg
+     *      - *.css
+     *
+     * 📌 Blocking Logic:
+     * - Blocked Resources:
+     *      *.jpg  → Image files
+     *      *.css  → Stylesheet files
+     *
+     * - Effect:
+     *   Browser skips downloading these resources
+     *   which reduces page load time and improves test speed
+     *
+     * 📌 Why we use it:
+     * - Faster UI test execution
+     * - Reduce dependency on slow/static assets
+     * - Avoid failures caused by delayed image or CSS loading
+     * - Improve stability in unstable network environments
+     * - Useful for backend/API-focused UI testing
+     *
+     * 📌 Real-world usage:
+     * - Performance optimization in automation suites
+     * - Running tests in low bandwidth environments
+     * - CI/CD pipeline execution speed improvement
+     * - Isolating UI logic from heavy frontend assets
+     *
+     * ⚠️ Important Notes:
+     * - Blocking CSS may affect UI rendering/layout
+     * - Some elements may become invisible or shift position
+     * - Use cautiously when validating UI styling
+     *
+     * - Blocking Images is generally safe for:
+     *      ✔ Functional testing
+     *      ✔ API validation
+     *      ✔ Navigation testing
+     *
+     * - Thread.sleep() is used only for demo purposes
+     *   → Prefer WebDriverWait for production automation
+     *
+     * 📌 Execution Time Calculation:
+     * - startTime → Captured before page load
+     * - endTime   → Captured after test completion
+     * - Difference indicates total execution duration
+     *
+     * ⚠️ Correction:
+     * Current calculation:
+     *      (startTime - endTime)
+     *
+     * Should be:
+     *      (endTime - startTime)
+     *
+     * 📚 Reference (Official Website):
+     * Network Domain:
+     * https://chromedevtools.github.io/devtools-protocol/tot/Network/
+     *
+     * setBlockedURLs:
+     * https://chromedevtools.github.io/devtools-protocol/tot/Network/#method-setBlockedURLs
+     */
+    @Test
+    public void blockUiNetworkRequests() throws InterruptedException {
+        // Here we are blocking the backend api calls, If any Image or CSS is taking much more time to load due to unstable network, then to avoid test failure we can block those api calls
+        ChromeDriver driver = new ChromeDriver();
+        DevTools devTools = driver.getDevTools();
+        devTools.createSession();
+        devTools.send(Network.enable(Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty()));
+        devTools.send(Network.setBlockedURLs(Optional.empty(),
+                Optional.of(List.of("*.jpg", "*.css"))));
+        long startTime = System.currentTimeMillis();
+        driver.get("https://rahulshettyacademy.com/angularAppdemo");
+        Thread.sleep(2000);
+        driver.findElement(By.xpath("//a[text()='Browse Products']")).click();
+        Thread.sleep(2000);
+        driver.findElement(By.xpath("//button[text()='Enable/Disable Buying']")).click();
+        driver.quit();
+        long endTime = System.currentTimeMillis();
+        System.out.println(startTime);
+        System.out.println(endTime);
+        System.out.println("Total Time taken"+(startTime - endTime));
     }
 }
