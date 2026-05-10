@@ -2,22 +2,31 @@ package com.selenium.test;
 
 import com.google.common.collect.ImmutableList;
 import net.thucydides.core.annotations.findby.By;
+import org.openqa.selenium.HasAuthentication;
+import org.openqa.selenium.UsernameAndPassword;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chromium.ChromiumNetworkConditions;
+import org.openqa.selenium.chromium.HasNetworkConditions;
 import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.v145.fetch.model.RequestPattern;
 import org.openqa.selenium.devtools.v145.emulation.Emulation;
 import org.openqa.selenium.devtools.v145.fetch.Fetch;
 import org.openqa.selenium.devtools.v145.network.Network;
-import org.openqa.selenium.devtools.v145.network.model.BlockPattern;
-import org.openqa.selenium.devtools.v145.network.model.ErrorReason;
-import org.openqa.selenium.devtools.v145.network.model.Request;
-import org.openqa.selenium.devtools.v145.network.model.Response;
+import org.openqa.selenium.devtools.v145.network.model.*;
+import org.openqa.selenium.logging.LogEntries;
+import org.openqa.selenium.logging.LogEntry;
+import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.Test;
 
+import java.net.URI;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.*;
+import java.util.function.Predicate;
 
 public class ChromeDevToolSelenium4 {
     @Test
@@ -604,5 +613,437 @@ public class ChromeDevToolSelenium4 {
         System.out.println(startTime);
         System.out.println(endTime);
         System.out.println("Total Time taken"+(startTime - endTime));
+    }
+    /**
+     * ============================================================
+     * 🔹 Test Case: Emulate Slow Network using CDP (Old Deprecated Method)
+     * ============================================================
+     *
+     * 📌 Purpose:
+     * This test simulates slow or unstable internet conditions
+     * using the old Chrome DevTools Protocol (CDP) API:
+     *
+     *      Network.emulateNetworkConditions()
+     *
+     * This helps validate how the application behaves under:
+     * - Slow internet
+     * - High latency
+     * - Poor bandwidth
+     * - Network inconsistency
+     *
+     * 📌 What this test does:
+     * - Launches Chrome browser
+     * - Creates DevTools session
+     * - Enables Network domain
+     * - Simulates slow network speed
+     * - Opens application under throttled network
+     * - Measures total execution time
+     * - Performs UI interaction
+     *
+     * 📌 Key CDP Features Used:
+     *
+     * 1. Network.enable
+     *    → Activates Network domain in Chrome DevTools
+     *    → Required before applying network configurations
+     *
+     * 2. Network.emulateNetworkConditions
+     *    → Simulates custom internet speed and latency
+     *    → Allows testing application behavior under
+     *      different network environments
+     *
+     * 📌 Network Configuration Used:
+     *
+     * - Offline Mode:
+     *      false
+     *      → Browser remains online
+     *
+     * - Latency:
+     *      3000 ms
+     *      → Simulates 3 seconds network delay
+     *
+     * - Download Speed:
+     *      20000 bytes/sec
+     *
+     * - Upload Speed:
+     *      10000 bytes/sec
+     *
+     * - Connection Type:
+     *      ETHERNET
+     *
+     * 📌 Why we use it:
+     * - Validate application performance on slow networks
+     * - Test loading spinners and lazy loading
+     * - Detect timeout-related UI issues
+     * - Verify retry mechanism behavior
+     * - Reproduce real-world unstable internet conditions
+     *
+     * 📌 Real-world usage:
+     * - Performance testing
+     * - Mobile/internet simulation
+     * - CI/CD environment validation
+     * - Testing in low bandwidth environments
+     * - Validating user experience under network delay
+     *
+     * ⚠️ Important Notes:
+     * - This method is DEPRECATED in Selenium 4 newer CDP versions
+     * - Deprecated in:
+     *      org.openqa.selenium.devtools.v145
+     *
+     * - Recommended Replacement:
+     *      ChromiumNetworkConditions
+     *      HasNetworkConditions
+     *
+     * - New Selenium-native API should be preferred
+     *   over raw CDP commands
+     *
+     * ⚠️ Thread.sleep():
+     * - Used only for demo purposes
+     * - Replace with WebDriverWait in production
+     *
+     * 📌 Execution Time Calculation:
+     * - startTime → Captured before application load
+     * - endTime   → Captured after test completion
+     * - Difference indicates total execution duration
+     *
+     * Correct Formula:
+     *      (endTime - startTime)
+     *
+     * 📚 Reference (Official Website):
+     * Network Domain:
+     * https://chromedevtools.github.io/devtools-protocol/tot/Network/
+     *
+     * emulateNetworkConditions:
+     * https://chromedevtools.github.io/devtools-protocol/tot/Network/#method-emulateNetworkConditions
+     */
+    @Test
+    public void emulateNetworkSpeedWithChromeDevToolsOldMethod() throws InterruptedException {
+        // This is used for fixing the network inconsistency and latency issues.
+        ChromeDriver driver = new ChromeDriver();
+        DevTools devTools = driver.getDevTools();
+        devTools.createSession();
+        devTools.send(Network.enable(Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty()));
+        devTools.send(Network.emulateNetworkConditions(false, 3000, 20000, 10000, Optional.of(ConnectionType.ETHERNET), Optional.empty(), Optional.empty(), Optional.empty()));
+        long startTime = System.currentTimeMillis();
+        driver.get("https://rahulshettyacademy.com/angularAppdemo");
+        Thread.sleep(2000);
+        driver.findElement(By.xpath("//button[text()=' Virtual Library ']")).click();
+        driver.quit();
+        long endTime = System.currentTimeMillis();
+    }
+    /**
+     * ============================================================
+     * 🔹 Test Case: Emulate Slow Network using Selenium Native API
+     * ============================================================
+     *
+     * 📌 Purpose:
+     * This test simulates slow internet conditions using
+     * Selenium 4 Chromium Network APIs instead of deprecated
+     * raw Chrome DevTools Protocol (CDP) methods.
+     *
+     * This is the modern and recommended approach for:
+     * - Network throttling
+     * - Latency simulation
+     * - Bandwidth limitation
+     * - Slow internet testing
+     *
+     * 📌 What this test does:
+     * - Launches Chrome browser
+     * - Configures slow network conditions
+     * - Applies custom latency
+     * - Limits upload/download bandwidth
+     * - Opens application under throttled network
+     * - Performs UI interaction
+     * - Waits for dynamic content
+     * - Measures total execution time
+     * - Validates application response using assertions
+     * - Resets network conditions
+     *
+     * 📌 Selenium APIs Used:
+     *
+     * 1. ChromiumNetworkConditions
+     *    → Selenium native class used for configuring:
+     *      - Latency
+     *      - Download speed
+     *      - Upload speed
+     *      - Offline mode
+     *
+     * 2. HasNetworkConditions
+     *    → Interface used to:
+     *      - Apply network conditions
+     *      - Reset network conditions
+     *
+     * 📌 Network Configuration Used:
+     *
+     * - Offline Mode:
+     *      false
+     *      → Browser remains online
+     *
+     * - Latency:
+     *      200 ms
+     *      → Simulates network response delay
+     *
+     * - Download Throughput:
+     *      50 KB/sec
+     *
+     * - Upload Throughput:
+     *      20 KB/sec
+     *
+     * 📌 Why we use it:
+     * - Validate application behavior under slow internet
+     * - Test loading indicators/spinners
+     * - Identify timeout-related failures
+     * - Verify application stability
+     * - Reproduce real-world mobile/slow network scenarios
+     *
+     * 📌 Real-world usage:
+     * - Performance testing
+     * - UI responsiveness validation
+     * - CI/CD network simulation
+     * - Low bandwidth testing
+     * - Dynamic content loading validation
+     * - Lazy loading verification
+     *
+     * 📌 Dynamic Content Validation:
+     * This test validates dynamically loaded content:
+     *
+     * Expected Text:
+     *      "Hello World!"
+     *
+     * The test continuously checks until:
+     * - Element becomes visible
+     * - Text becomes available
+     * - Timeout occurs
+     *
+     * 📌 Waiting Logic:
+     * - Uses polling loop for demo purposes
+     * - Poll interval:
+     *      500 ms
+     *
+     * - Safety Timeout:
+     *      30 seconds
+     *
+     * ⚠️ Production Recommendation:
+     * Replace manual polling with:
+     *      WebDriverWait
+     *      ExpectedConditions
+     *
+     * 📌 Assertions:
+     * - Validates actual text against expected text
+     * - Throws AssertionError on mismatch
+     * - Logs assertion status in console
+     *
+     * 📌 Execution Time Calculation:
+     * - startTime → Captured before page load
+     * - endTime   → Captured after validation
+     * - Difference indicates total execution duration
+     *
+     * Formula Used:
+     *      Duration.between(startTime, endTime)
+     *
+     * 📌 Why New API is Better:
+     * ✔ Cleaner implementation
+     * ✔ Selenium-native abstraction
+     * ✔ Easier maintenance
+     * ✔ Better readability
+     * ✔ Avoids deprecated CDP methods
+     * ✔ Future-proof approach
+     *
+     * ⚠️ Important Notes:
+     * - Works only on Chromium-based browsers:
+     *      ✔ Chrome
+     *      ✔ Edge
+     *      ✔ Chromium
+     *
+     * - Throughput values are in:
+     *      bytes/sec
+     *
+     * - Thread.sleep() used only for demo purposes
+     *
+     * 📚 Reference (Official Website):
+     * Selenium HasNetworkConditions:
+     * https://www.selenium.dev/selenium/docs/api/java/org/openqa/selenium/chromium/HasNetworkConditions.html
+     *
+     * Selenium ChromiumNetworkConditions:
+     * https://www.selenium.dev/selenium/docs/api/java/org/openqa/selenium/chromium/ChromiumNetworkConditions.html
+     */
+    @Test
+    public void emulateNetworkSpeedWithChromeDevTools() throws InterruptedException {
+        // This is used for fixing the network inconsistency and latency issues.
+        // ============================================================
+        // 🔹 Launch Chrome Browser
+        // ============================================================
+
+        WebDriver driver = new ChromeDriver();
+
+        // Maximize browser
+        driver.manage().window().maximize();
+
+        // Implicit wait
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+
+        // ============================================================
+        // 🔹 Setup Network Throttling Conditions
+        // ============================================================
+
+        ChromiumNetworkConditions networkConditions =
+                new ChromiumNetworkConditions();
+
+        // Simulate Slow 3G Network
+
+        // Latency = delay between request & response
+        networkConditions.setLatency(Duration.ofMillis(200));
+
+        // Download speed in bytes/sec
+        networkConditions.setDownloadThroughput(50 * 1024);
+
+        // Upload speed in bytes/sec
+        networkConditions.setUploadThroughput(20 * 1024);
+
+        // Online mode
+        networkConditions.setOffline(false);
+
+        // Apply network conditions
+        ((HasNetworkConditions) driver)
+                .setNetworkConditions(networkConditions);
+
+        System.out.println("=================================================");
+        System.out.println("✅ Network Throttling Applied Successfully");
+        System.out.println("Latency          : 200 ms");
+        System.out.println("Download Speed   : 50 KB/s");
+        System.out.println("Upload Speed     : 20 KB/s");
+        System.out.println("=================================================");
+
+        // ============================================================
+        // 🔹 Start Time Logging
+        // ============================================================
+
+        Instant startTime = Instant.now();
+
+        System.out.println("🚀 Opening application...");
+        System.out.println("Start Time : " + startTime);
+
+        // Open website
+        driver.get("https://the-internet.herokuapp.com/dynamic_loading/1");
+
+        // ============================================================
+        // 🔹 Perform Action
+        // ============================================================
+
+        WebElement startButton =
+                driver.findElement(By.cssSelector("#start button"));
+
+        startButton.click();
+
+        // ============================================================
+        // 🔹 Wait Until Result Appears
+        // ============================================================
+
+        WebElement finishText;
+
+        long waitStart = System.currentTimeMillis();
+
+        while (true) {
+
+            finishText = driver.findElement(By.id("finish"));
+
+            if (finishText.isDisplayed()
+                    && finishText.getText().trim().length() > 0) {
+                break;
+            }
+
+            // Safety timeout after 30 seconds
+            long currentTime = System.currentTimeMillis();
+
+            if ((currentTime - waitStart) > 30000) {
+                throw new RuntimeException(
+                        "❌ Timeout: Element did not appear within 30 seconds");
+            }
+
+            Thread.sleep(500);
+        }
+
+        // ============================================================
+        // 🔹 End Time Logging
+        // ============================================================
+
+        Instant endTime = Instant.now();
+
+        long totalTime =
+                Duration.between(startTime, endTime).toMillis();
+
+        System.out.println("=================================================");
+        System.out.println("✅ Page Loaded Successfully");
+        System.out.println("End Time   : " + endTime);
+        System.out.println("Total Time : " + totalTime + " ms");
+        System.out.println("=================================================");
+
+        // ============================================================
+        // 🔹 Assertions
+        // ============================================================
+
+        String actualText = finishText.getText().trim();
+        String expectedText = "Hello World!";
+
+        System.out.println("=================================================");
+        System.out.println("🔍 Performing Assertions");
+        System.out.println("Expected : " + expectedText);
+        System.out.println("Actual   : " + actualText);
+        System.out.println("=================================================");
+
+        if (actualText.equals(expectedText)) {
+
+            System.out.println("✅ ASSERTION PASSED");
+            System.out.println("Text matched successfully");
+
+        } else {
+
+            System.out.println("❌ ASSERTION FAILED");
+
+            throw new AssertionError(
+                    "Expected: "
+                            + expectedText
+                            + " but found: "
+                            + actualText);
+        }
+
+        // ============================================================
+        // 🔹 Reset Network Conditions
+        // ============================================================
+
+        ((HasNetworkConditions) driver)
+                .deleteNetworkConditions();
+
+        System.out.println("=================================================");
+        System.out.println("✅ Network Conditions Reset");
+        System.out.println("=================================================");
+
+        // ============================================================
+        // 🔹 Close Browser
+        // ============================================================
+
+        driver.quit();
+
+        System.out.println("=================================================");
+        System.out.println("✅ Test Completed Successfully");
+        System.out.println("=================================================");
+
+    }
+    @Test
+    public void logJavaScriptErrorsInSeleniumScript(){
+        WebDriver driver = new ChromeDriver();
+        driver.get("https://rahulshettyacademy.com/angularAppdemo");
+        driver.findElement(By.linkText("Browse Products")).click();
+        driver.findElement(By.partialLinkText("Selenium")).click();
+        driver.findElement(By.cssSelector(".add-to-cart")).click();
+        driver.findElement(By.linkText("Cart")).click();
+        driver.findElement(By.id("exampleInputEmail1")).clear();
+        driver.findElement(By.id("exampleInputEmail1")).sendKeys("2");
+        // Now due to the JavaScript Bug we will receive the error message on JavaScript DOM
+        LogEntries logEntries = driver.manage().logs().get(LogType.BROWSER); // Get LogEntries Object
+        List<LogEntry> logs = logEntries.getAll(); // .getAll() method returns all the logs in List format
+        for (LogEntry e : logs){
+            System.out.println(e.getMessage()); // To extract message in Log file we can use log4j
+        }
+
     }
 }
